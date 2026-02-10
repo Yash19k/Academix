@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin – EduNexus Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f8f9fe;
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+/* Top Navigation Bar */
+        .top-nav {
+            background: #2d54e8;
+            color: white;
+            padding: 12px 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .top-nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .top-nav .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: #4169ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-tabs-custom {
+            background: transparent;
+            border: none;
+            gap: 8px;
+        }
+
+        .nav-tabs-custom .nav-link {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        .assignments-badge {
+            background: #4169ff;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            width: 280px;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+/* ========== MAIN CONTAINER ========== */
+.main-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ========== PAGE HEADER ========== */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-export {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #3b82f6;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-export:hover {
+    background: #f8fafc;
+    border-color: #3b82f6;
+}
+
+.btn-quick-add {
+    background: #3b82f6;
+    border: none;
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-quick-add:hover {
+    background: #2563eb;
+}
+
+/* ========== STATISTICS CARDS ========== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid #f1f5f9;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.stat-icon.students {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.stat-icon.faculty {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.stat-icon.courses {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.stat-badge {
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-badge.positive {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.stat-badge.neutral {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.stat-badge.new {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ========== SECTIONS ========== */
+.section-box {
+    display: none;
+}
+
+.active-section {
+    display: block;
+}
+
+.section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.view-all-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.view-all-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* ========== SEARCH BAR ========== */
+.search-bar {
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0.75rem center;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ========== STUDENT CARDS ========== */
+.students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.student-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+    height: 100%;
+}
+
+.student-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+
+.student-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.student-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.student-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.student-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #0f172a;
+    margin-bottom: 0.125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.student-id {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.student-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.action-dots {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: #64748b;
+}
+
+.action-dots:hover {
+    background: #f1f5f9;
+}
+
+.student-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.9rem;
+}
+
+.student-meta {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.view-profile-btn {
+    width: 100%;
+    padding: 0.625rem;
+    background: #eff6ff;
+    border: none;
+    border-radius: 6px;
+    color: #3b82f6;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-profile-btn:hover {
+    background: #dbeafe;
+}
+
+.add-student-card {
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 200px;
+}
+
+.add-student-card:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+.add-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.add-student-title {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+.add-student-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+/* ========== FACULTY TABLE ========== */
+.faculty-section {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.add-faculty-form {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.form-input {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btn-add-faculty {
+    background: #16a34a;
+    border: none;
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-add-faculty:hover {
+    background: #15803d;
+}
+
+.faculty-table-wrapper {
+    overflow-x: auto;
+}
+
+.faculty-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.faculty-table thead tr {
+    background: transparent;
+}
+
+.faculty-table th {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #3b82f6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.faculty-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+}
+
+.faculty-row {
+    transition: background 0.2s;
+}
+
+.faculty-row:hover {
+    background: #f8fafc;
+}
+
+.faculty-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.faculty-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.faculty-info-cell {
+    display: flex;
+    flex-direction: column;
+}
+
+.faculty-name {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 0.95rem;
+    line-height: 1.3;
+}
+
+.faculty-title {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.status-badge {
+    display: inline-flex;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-badge.leave {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.btn-edit {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+.btn-edit:hover {
+    text-decoration: underline;
+}
+
+.add-faculty-button {
+    width: 100%;
+    padding: 1rem;
+    border: 2px dashed #cbd5e1;
+    background: white;
+    color: #3b82f6;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.add-faculty-button:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+/* ========== COURSES SECTION ========== */
+.courses-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.course-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+}
+
+.course-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.course-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.course-title {
+    font-weight: 600;
+    color: #0f172a;
+    font-size: 1rem;
+}
+
+.course-code {
+    background: #eff6ff;
+    color: #3b82f6;
+    padding: 0.25rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.course-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.course-students {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.course-capacity {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.course-progress {
+    width: 100%;
+    height: 6px;
+    background: #f1f5f9;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s;
+}
+
+.progress-fill.high {
+    background: #3b82f6;
+}
+
+.progress-fill.medium {
+    background: #8b5cf6;
+}
+
+.progress-fill.low {
+    background: #f97316;
+}
+
+.progress-fill.very-low {
+    background: #10b981;
+}
+
+.btn-create-course {
+    width: 100%;
+    padding: 0.875rem;
+    background: #3b82f6;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-create-course:hover {
+    background: #2563eb;
+}
+
+/* ========== ALERTS ========== */
+.alert-custom {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.alert-custom.success {
+    background: #dcfce7;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.alert-custom.error {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #991b1b;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+.alert-close:hover {
+    opacity: 1;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #94a3b8;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .students-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-export,
+    .btn-quick-add {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MAIN CONTAINER ========== -->
+<div class="main-container mt-4">
+    
+    <!-- ========== PAGE HEADER ========== -->
+    <div class="page-header d-flex justify-content-between align-items-start mb-4 ">
+        <div>
+            <h1 class="page-title">Dashboard Overview</h1>
+            <p class="page-subtitle">Welcome back, here's what's happening at your institution today.</p>
+        </div>
+        <div class="header-actions">
+            <!-- <button class="btn-export">
+                <i class="bi bi-download"></i>
+                Export Report
+            </button>
+            <button class="btn-quick-add">
+                <i class="bi bi-plus-lg"></i>
+                Quick Add
+            </button> -->
+        </div>
+    </div>
+
+    <!-- ========== STATISTICS CARDS ========== -->
+    <div class="stats-grid">
+        <div class="stat-card" onclick="showSection('studentSection')">
+            <div class="stat-header">
+                <div class="stat-icon students">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-badge positive">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    12%
+                </div>
+            </div>
+            <div class="stat-number">{{ students|length }}</div>
+            <div class="stat-label">Total Students Enrolled</div>
+        </div>
+
+        <div class="stat-card" onclick="showSection('facultySection')">
+            <div class="stat-header">
+                <div class="stat-icon faculty">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="stat-badge neutral">
+                    <i class="bi bi-dash"></i>
+                    0%
+                </div>
+            </div>
+            <div class="stat-number">{{ faculties|length }}</div>
+            <div class="stat-label">Active Faculty Members</div>
+        </div>
+
+        <div class="stat-card" onclick="showSection('courseSection')">
+            <div class="stat-header">
+                <div class="stat-icon courses">
+                    <i class="bi bi-book-fill"></i>
+                </div>
+                <div class="stat-badge new">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    4 New
+                </div>
+            </div>
+            <div class="stat-number">{{ courses|length }}</div>
+            <div class="stat-label">Published Courses</div>
+        </div>
+    </div>
+
+    <!-- ========== STUDENT SECTION ========== -->
+    <div id="studentSection" class="section-box active-section">
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-clipboard-check"></i>
+                    Recent Students
+                </h2>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search students...">
+            </div>
+
+            <div class="students-grid">
+                {% for s in students %}
+                <div class="student-card">
+                    <div class="student-header">
+                        <div class="student-avatar">{{ s.name[0]|upper }}</div>
+                        <div class="student-info">
+                            <div class="student-name">{{ s.name }}</div>
+                            <div class="student-id">ID: {{ s.email.split('@')[0]|upper }}</div>
+                        </div>
+                        <div class="student-actions">
+                            <div class="action-dots">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="student-details">
+                        <div class="detail-item">
+                            <div class="detail-label">GPA</div>
+                            <div class="detail-value">3.8</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Major</div>
+                            <div class="detail-value">
+                                {% if s.course %}
+                                    {{ s.course[:3]|upper }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="student-meta">{{ s.email }}</div>
+                    
+                    <button class="view-profile-btn">View Profile</button>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No students found</h5>
+                </div>
+                {% endfor %}
+                
+                <!-- <div class="student-card add-student-card">
+                    <div class="add-icon">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <div class="add-student-title">Add New Student</div>
+                    <div class="add-student-subtitle">Register a new enrollment</div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FACULTY SECTION ========== -->
+    <div id="facultySection" class="section-box">
+        <div class="section-card faculty-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-people"></i>
+                    Faculty Members
+                </h2>
+                <a href="#" class="view-all-link">View All</a>
+            </div>
+
+            <!-- SUCCESS/ERROR MESSAGES -->
+            {% if message %}
+            <div class="alert-custom success">
+                <span>{{ message }}</span>
+                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="alert-custom error">
+                <span>{{ error }}</span>
+                <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+            {% endif %}
+
+            <!-- ADD FACULTY FORM -->
+            <div class="add-faculty-form">
+                <form method="POST" action="/admin">
+                    <div class="form-row">
+                        <input name="fname" id="fname" class="form-input" placeholder="Faculty Name" required>
+                        <input name="fdept" id="fdept" class="form-input" placeholder="Department" required>
+                        <input name="fmail" id="fmail" type="email" class="form-input" placeholder="Email" required>
+                        <button type="submit" class="btn-add-faculty">Add Faculty</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- FACULTY TABLE -->
+            <div class="faculty-table-wrapper">
+                <table class="faculty-table">
+                    <thead>
+                        <tr>
+                            <th>Professor</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in faculties %}
+                        <tr class="faculty-row">
+                            <td>
+                                <div class="faculty-profile">
+                                    <img src="https://ui-avatars.com/api/?name={{ f.name|urlencode }}&background=3b82f6&color=fff" 
+                                         alt="{{ f.name }}" 
+                                         class="faculty-avatar">
+                                    <div class="faculty-info-cell">
+                                        <div class="faculty-name">{{ f.name }}</div>
+                                        <div class="faculty-title">PhD, {{ f.dept }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ f.dept }}</td>
+                            <td>
+                                <span class="status-badge active">Active</span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                <div class="empty-state">
+                                    <i class="bi bi-inbox"></i>
+                                    <h5>No faculty found</h5>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ADD FACULTY BUTTON -->
+            <button class="add-faculty-button">
+                <i class="bi bi-plus-circle"></i>
+                Add New Faculty Member
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== COURSE SECTION ========== -->
+    <div id="courseSection" class="section-box">
+        <div class="section-card">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-journal-text"></i>
+                    Active Courses
+                </h2>
+            </div>
+
+            <div class="courses-grid">
+                {% for course in courses %}
+                <div class="course-item">
+                    <div class="course-header-row">
+                        <div class="course-title">{{ course }}</div>
+                        <div class="course-code">CS101</div>
+                    </div>
+                    <div class="course-meta">
+                        <span class="course-students">45 Students</span>
+                        <span class="course-capacity">85% Full</span>
+                    </div>
+                    <div class="course-progress">
+                        <div class="progress-fill high" style="width: 85%"></div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No courses found</h5>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button class="btn-create-course">Create New Course</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showSection(id) {
+    // Hide all sections
+    document.getElementById("studentSection").classList.remove("active-section");
+    document.getElementById("facultySection").classList.remove("active-section");
+    document.getElementById("courseSection").classList.remove("active-section");
+
+    // Show selected section
+    document.getElementById(id).classList.add("active-section");
+}
+
+// If there's a message or error, show the faculty section automatically
+{% if message or error %}
+window.addEventListener('DOMContentLoaded', function() {
+    showSection('facultySection');
+});
+{% endif %}
+</script>
+
+</body>
+</html>

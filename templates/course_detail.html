@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} - Academix</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-purple: #5B21B6;
+            --primary-purple-dark: #4C1D95;
+            --secondary-purple: #7C3AED;
+            --light-purple: #EDE9FE;
+            --accent-yellow: #FCD34D;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #F9FAFB;
+            color: #111827;
+        }
+        
+        /* Top Navigation Bar */
+        .top-nav {
+            background: #2d54e8;
+            color: white;
+            padding: 12px 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .top-nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .top-nav .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: #4169ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-tabs-custom {
+            background: transparent;
+            border: none;
+            gap: 8px;
+        }
+
+        .nav-tabs-custom .nav-link {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        .assignments-badge {
+            background: #4169ff;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            width: 280px;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        
+        /* Hero Section */
+        .hero-section {
+            background:#4f46e5;
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .breadcrumb-custom {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .breadcrumb-custom a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-custom a:hover {
+            color: white;
+        }
+        
+        .breadcrumb-custom .active {
+            color: white;
+        }
+        
+        .breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .badge-level {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .course-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            line-height: 1.2;
+        }
+        
+        .course-description {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+        }
+        
+        .instructor-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .instructor-avatars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+        
+        .instructor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-purple);
+            margin-left: -12px;
+        }
+        
+        .instructor-avatar:first-child {
+            margin-left: 0;
+        }
+        
+        .instructor-names {
+            color: white;
+            font-weight: 600;
+        }
+        
+        .instructor-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        /* Progress Card */
+        .progress-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+        }
+        
+        .progress-percentage {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-left: auto;
+        }
+        
+        .progress-bar-custom {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0 0.5rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .last-activity {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        /* Main Content */
+        .content-section {
+            margin-top: -3rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .card-custom {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header-custom {
+            padding: 1.5rem;
+            border-bottom: 1px solid #E5E7EB;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-header-custom h5 {
+            font-weight: 700;
+            margin: 0;
+            color: #111827;
+        }
+        
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.5rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+        }
+        
+        /* Syllabus Items */
+        .syllabus-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .syllabus-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: background 0.2s;
+        }
+        
+        .syllabus-item:hover {
+            background: #F9FAFB;
+        }
+        
+        .syllabus-item:last-child {
+            border-bottom: none;
+        }
+        
+        .chapter-number {
+            width: 48px;
+            height: 48px;
+            background:#2d54e8;
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .chapter-number.locked {
+            background: #E5E7EB;
+            color: #9CA3AF;
+        }
+        
+        .chapter-content {
+            flex: 1;
+        }
+        
+        .chapter-title {
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .chapter-title.locked {
+            color: #9CA3AF;
+        }
+        
+        .btn-open {
+            background:#2d54e8;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-open:hover {
+            background: var(--primary-purple-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-locked {
+            background: transparent;
+            color: #9CA3AF;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: not-allowed;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Course Info Sidebar */
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--light-purple);
+            color: var(--primary-purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .info-content h6 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem 0;
+            color: #111827;
+        }
+        
+        .info-content p {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin: 0;
+        }
+        
+        .instructor-card {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .instructor-card h6 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6B7280;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .instructor-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .instructor-profile img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        .instructor-details h5 {
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 0 0 0.25rem 0;
+            color: #111827;
+        }
+        
+        .instructor-details p {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin: 0;
+        }
+        
+        .instructor-bio {
+            font-size: 0.85rem;
+            color: #6B7280;
+            margin-top: 1rem;
+            line-height: 1.6;
+        }
+        
+        .btn-resume {
+            background: var(--primary-purple);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-resume:hover {
+            background: var(--primary-purple-dark);
+            transform: translateY(-1px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .course-title {
+                font-size: 1.75rem;
+            }
+            
+            .search-box {
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .card-header-custom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .progress-percentage {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- TOP NAVIGATION BAR -->
+<nav class="top-nav">
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Brand -->
+        <div class="d-flex align-items-center gap-4">
+            <a href="/dashboard" class="brand">
+                <div class="brand-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <span>Academix</span>
+            </a>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs-custom">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/course_catalog">
+                        <i class="bi bi-book"></i> Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chatbot">
+                        <i class="bi bi-robot me-2"></i> Chatbot
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="/admin">
+                        <i class="bi bi-gear me-2"></i> Admin
+                    </a>
+                </li> -->
+                
+            </ul>
+        </div>
+
+        <!-- Right Side -->
+        <div class="d-flex align-items-center gap-3">
+            <!-- Search -->
+            <!-- <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search...">
+            </div> -->
+
+            
+
+            <!-- User Profile -->
+            <div class="user-profile">
+                <a class="nav-link" href="/profile">
+                    <div class="user-info">
+                        <div class="user-name">{% if user %}{{ user }}{% else %}Alex Morgan{% endif %}</div>
+                        <!-- <div class="user-role">Student</div> -->
+                    </div>
+                </a>
+                <a class="nav-link" href="/profile">
+                    <div class="user-avatar">                        
+                        {% if user %}{{ user[0] }}{% else %}A{% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mt-4">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="/courses">Courses</a></li>
+                            <li class="breadcrumb-item"><a href="#">Data Science</a></li>
+                            <li class="breadcrumb-item active">Advanced Python</li>
+                        </ol>
+                    </nav>
+                    
+                    <!-- Level Badge -->
+                    <div class="badge-level">
+                        <i class="bi bi-star-fill"></i>
+                        INTERMEDIATE
+                        <span style="margin-left: 0.5rem;">⭐ 4.8 (1,204 reviews)</span>
+                    </div>
+                    
+                    <!-- Course Title -->
+                    <h1 class="course-title">Advanced Python for Data Science</h1>
+                    
+                    <!-- Description -->
+                    <p class="course-description">
+                        Master complex data structures, algorithms, and libraries tailored for real-world data science applications. Take your Python skills beyond the basics.
+                    </p>
+                    
+                    <!-- Instructors -->
+                    <div class="instructor-info">
+                        <div class="instructor-avatars">
+                            <img src="https://i.pravatar.cc/150?img=33" alt="Instructor" class="instructor-avatar">
+                            <img src="https://i.pravatar.cc/150?img=45" alt="Instructor" class="instructor-avatar">
+                        </div>
+                        <div>
+                            <div class="instructor-label">Instructors</div>
+                            <div class="instructor-names">Dr. Alex Chen & Sarah Miller</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Progress Card -->
+                    <!-- <div class="progress-card">
+                        <div class="d-flex align-items-center mb-2">
+                            <div>Course Progress</div>
+                            <div class="progress-percentage">35%</div>
+                        </div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: 35%;"></div>
+                        </div>
+                        <div class="last-activity">Last activity: 2 days ago</div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container content-section">
+        <div class="row">
+            <!-- Left Column - Syllabus -->
+            <div class="col-lg-8">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5>Course Syllabus</h5>
+                        <div class="search-box">
+                            <i class="bi bi-search"></i>
+                            <input type="text" placeholder="Search chapters...">
+                        </div>
+                    </div>
+                    
+                    <ul class="syllabus-list">
+                        {% if chapters %}
+                            {% for ch in chapters %}
+                            <li class="syllabus-item">
+                                <div class="chapter-number {% if ch.is_locked %}locked{% endif %}">
+                                    {{ ch.chapter_no }}
+                                </div>
+                                <div class="chapter-content">
+                                    <h6 class="chapter-title {% if ch.is_locked %}locked{% endif %}">
+                                        {{ ch.title }}
+                                    </h6>
+                                </div>
+                                {% if ch.is_locked %}
+                                    <button class="btn-locked">
+                                        <i class="bi bi-lock-fill"></i>
+                                        Locked
+                                    </button>
+                                {% else %}
+                                    <a href="/chapter/{{ ch.id }}" class="btn-open">
+                                        Open
+                                    </a>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="syllabus-item">
+                                <p>No chapters available yet.</p>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Right Column - Course Info -->
+            <div class="col-lg-4">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5>Course Info</h5>
+                    </div>
+                    
+                    <div style="padding: 1.5rem;">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="info-content">
+                                <h6>12 Hours on-demand video</h6>
+                                <p>Self-paced</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-code-square"></i>
+                            </div>
+                            <div class="info-content">
+                                <h6>15 Coding Exercises</h6>
+                                <p>Browser-based IDE</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item" style="margin-bottom: 0;">
+                            <div class="info-icon">
+                                <i class="bi bi-trophy"></i>
+                            </div>
+                            <div class="info-content">
+                                <h6>Certificate of Completion</h6>
+                                <p>Shareable on LinkedIn</p>
+                            </div>
+                        </div>
+                        
+                        <div class="instructor-card">
+                            <h6>Your Instructors</h6>
+                            
+                            <div class="instructor-profile">
+                                <img src="https://i.pravatar.cc/150?img=33" alt="Dr. Alex Chen">
+                                <div class="instructor-details">
+                                    <h5>Dr. Alex Chen</h5>
+                                    <p>PhD in Machine Learning</p>
+                                </div>
+                            </div>
+                            
+                            <p class="instructor-bio">
+                                Senior Data Scientist at TechFlow with 10+ years of industry experience building scalable AI systems.
+                            </p>
+                        </div>
+                        
+                        <!-- <button class="btn-resume">
+                            Resume Course
+                            <i class="bi bi-arrow-right"></i>
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

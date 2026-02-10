@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 440px;
+            background: white;
+            border-radius: 16px;
+            padding: 48px 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #4169e1;
+        }
+
+        .register-box h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .form-floating > label {
+            color: #4b5563;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 15px;
+            color: #1f2937;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #4169e1;
+            box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-floating > .form-control {
+            height: 56px;
+        }
+
+        .btn-primary {
+            background: #4169e1;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            height: 52px;
+        }
+
+        .btn-primary:hover {
+            background: #3557c7;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            border-radius: 8px;
+            font-size: 14px;
+            padding: 12px 16px;
+            border: none;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        #passwordRules {
+            background: #f9fafb;
+            border-left: 3px solid #4169e1;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        #passwordRules ul {
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+
+        #passwordRules li {
+            margin-bottom: 4px;
+        }
+
+        #passwordError {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .text-center p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .text-center a {
+            color: #4169e1;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .text-center a:hover {
+            color: #3557c7;
+            text-decoration: underline;
+        }
+
+        .icon-header {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #4169e1 0%, #5b7ce6 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .icon-header::before {
+            content: "🎓";
+            font-size: 28px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-box">
+
+    <!-- Icon Header -->
+    <div class="icon-header"></div>
+
+    <h3 class="text-center">Create your account</h3>
+    <p class="subtitle">Join thousands of students mastering new skills on Academix.</p>
+
+    <!-- ERROR MESSAGE -->
+    {% if error %}
+    <div class="alert alert-danger text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- SUCCESS MESSAGE -->
+    {% if success %}
+    <div class="alert alert-success text-center">
+        {{ success }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+
+        <!-- USERNAME -->
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" name="username" placeholder="Username" required>
+            <label>Username</label>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" name="email" placeholder="Email" required>
+            <label>Email Address</label>
+        </div>
+        <!-- PASSWORD -->
+        <div class="form-floating mb-2">
+            <input type="password"
+                   class="form-control"
+                   id="password"
+                   name="password"
+                   placeholder="Password"
+                   required>
+            <label>Password</label>
+        </div>
+
+
+        <div id="passwordRules" class="small mb-2" style="display:none;">
+    <strong>PASSWORD MUST CONTAIN:</strong>
+    <ul class="mb-0">
+        <li>Minimum 8 characters</li>
+        <li>1 uppercase letter</li>
+        <li>1 lowercase letter</li>
+        <li>1 number</li>
+        <li>1 special character</li>
+    </ul>
+</div>
+
+
+        <!-- PASSWORD ERROR -->
+        <div id="passwordError" class="text-danger mb-3" style="display:none;">
+            Password does not meet the requirements.
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">
+            Start Learning Now
+        </button>
+
+        <p class="text-center mt-3">
+            Already have an account?
+            <a href="/login">Log in here</a>
+        </p>
+
+    </form>
+</div>
+
+<!-- PASSWORD VALIDATION SCRIPT -->
+<script>
+const passwordInput = document.getElementById("password");
+const error = document.getElementById("passwordError");
+const rules = document.getElementById("passwordRules");
+
+const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+// LIVE CHECK while typing
+passwordInput.addEventListener("input", function () {
+    if (!regex.test(passwordInput.value)) {
+        rules.style.display = "block";
+        error.style.display = "block";
+    } else {
+        rules.style.display = "none";
+        error.style.display = "none";
+    }
+});
+
+// FINAL CHECK on submit
+document.querySelector("form").addEventListener("submit", function(e) {
+    if (!regex.test(passwordInput.value)) {
+        e.preventDefault();
+        rules.style.display = "block";
+        error.style.display = "block";
+    }
+});
+</script>
+
+
+</body>
+</html>

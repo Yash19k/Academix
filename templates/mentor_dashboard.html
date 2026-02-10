@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Mentor Dashboard{% endblock %}
+
+{% block content %}
+
+<h2>Mentor Dashboard</h2>
+
+<!-- Assigned Courses -->
+<h3>Assigned Courses</h3>
+<ul>
+    <li>Python Programming</li>
+    <li>Data Structures</li>
+    <li>Database Management Systems</li>
+</ul>
+
+<hr>
+
+<!-- Pending Doubts -->
+<h3>Pending Student Doubts</h3>
+<ul>
+    <li>
+        <a href="/doubt/1">What is polymorphism in Java?</a>
+    </li>
+    <li>
+        <a href="/doubt/2">Explain normalization in DBMS</a>
+    </li>
+</ul>
+
+<hr>
+
+<!-- Student Performance Summary -->
+<h3>Student Performance Summary</h3>
+<ul>
+    <li>Total Students: 45</li>
+    <li>Average Quiz Score: 72%</li>
+    <li>Students with Low Performance: 8</li>
+</ul>
+
+<hr>
+
+<!-- Mentor Actions -->
+<h3>Actions</h3>
+<ul>
+    <li><a href="/upload-notes">Upload Notes</a></li>
+    <li><a href="/upload-videos">Upload Videos</a></li>
+    <li><a href="/create-quiz">Create Quiz</a></li>
+</ul>
+
+{% endblock %}

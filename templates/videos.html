@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Videos - Academix</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #fafbfc;
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            background: #2d54e8;
+            color: white;
+            padding: 12px 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .top-nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .top-nav .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: #4169ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-tabs-custom {
+            background: transparent;
+            border: none;
+            gap: 8px;
+        }
+
+        .nav-tabs-custom .nav-link {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        .assignments-badge {
+            background: #4169ff;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            width: 280px;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+
+        /* Page Header */
+        .page-header {
+            margin-top: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-label {
+            color: #2563eb;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-title-icon {
+            font-size: 2.5rem;
+            vertical-align: middle;
+            margin-left: 0.25rem;
+        }
+
+        .page-description {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 65ch;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-top: 1.75rem;
+        }
+
+        .progress-label {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1a202c;
+            white-space: nowrap;
+        }
+
+        .progress-wrapper {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .progress {
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9375rem;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        /* Video Grid */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid #f1f5f9;
+        }
+
+        .video-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Video Thumbnail */
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: #1e293b;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 72px;
+            height: 72px;
+            background: #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .video-card:hover .play-overlay {
+            transform: translate(-50%, -50%) scale(1.15);
+            background: #1d4ed8;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 72px;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.75rem;
+            z-index: 2;
+        }
+
+        .video-locked .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            z-index: 1;
+        }
+
+        .badge-watched {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-up-next {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Video Content */
+        .video-content {
+            padding: 1.375rem 1.5rem;
+        }
+
+        .lesson-tag {
+            color: #2563eb;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.625rem;
+            display: block;
+        }
+
+        .video-title {
+            font-size: 1.1875rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.625rem;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+        }
+
+        .video-description {
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+            margin-bottom: 1.125rem;
+        }
+
+        /* Video Footer */
+        .video-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .video-action-btn {
+            color: #2563eb;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .video-action-btn:hover {
+            color: #1d4ed8;
+        }
+
+        .video-meta-info {
+            color: #94a3b8;
+            font-size: 0.8125rem;
+        }
+
+        .locked-status {
+            color: #94a3b8;
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        .coming-soon-tag {
+            color: #94a3b8;
+            font-size: 0.8125rem;
+            font-style: italic;
+        }
+
+        /* Page Footer */
+        .page-footer {
+            margin-top: 6rem;
+            padding: 2.5rem 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copyright {
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .footer-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: #1a202c;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .videos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2.25rem;
+            }
+
+            .progress-section {
+                flex-wrap: wrap;
+            }
+
+            .progress-wrapper {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- TOP NAVIGATION BAR -->
+<nav class="top-nav">
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Brand -->
+        <div class="d-flex align-items-center gap-4">
+            <a href="/dashboard" class="brand">
+                <div class="brand-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <span>Academix</span>
+            </a>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs-custom">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/course_catalog">
+                        <i class="bi bi-book"></i> Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chatbot">
+                        <i class="bi bi-robot me-2"></i> Chatbot
+                    </a>
+                </li>
+                
+                
+            </ul>
+        </div>
+
+        <!-- Right Side -->
+        <div class="d-flex align-items-center gap-3">
+            <!-- Search -->
+            <!-- <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search...">
+            </div> -->
+
+            
+
+            <!-- User Profile -->
+            <div class="user-profile">
+                <a class="nav-link" href="/profile">
+                    <div class="user-info">
+                        <div class="user-name">{% if user %}{{ user }}{% else %}Alex Morgan{% endif %}</div>
+                        <!-- <div class="user-role">Student</div> -->
+                    </div>
+                </a>
+                <a class="nav-link" href="/profile">
+                    <div class="user-avatar">                        
+                        {% if user %}{{ user[0] }}{% else %}A{% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="module-label">MODULE 3 › Advanced Concepts</div>
+            <h1 class="page-title">
+                Chapter Videos<span class="page-title-icon">🎬</span>
+            </h1>
+            <p class="page-description">
+                Master the fundamentals of data structures with these deep-dive video lessons.<br>
+                Watch them in order for the best learning experience.
+            </p>
+
+            <!-- Progress Bar -->
+            <!-- <div class="progress-section">
+                <span class="progress-label">Progress</span>
+                <div class="progress-wrapper">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <span class="progress-text">2/6 Completed</span>
+            </div> -->
+        </div>
+
+        <!-- Videos Grid -->
+        <div class="videos-grid">
+            {% if videos %}
+                {% for video in videos %}
+                    <div class="video-card {% if video.locked %}video-locked{% endif %}">
+                        <!-- Video Thumbnail -->
+                        <div class="video-thumbnail">
+                            {% if video.thumbnail %}
+                                <img src="{{ url_for('static', filename=video.thumbnail) }}" alt="{{ video.title }}">
+                            {% else %}
+                                <!-- Placeholder gradient if no thumbnail -->
+                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            {% endif %}
+
+                            <!-- Status Badges -->
+                            {% if video.status == 'watched' %}
+                                <div class="status-badge badge-watched">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>WATCHED</span>
+                                </div>
+                            {% elif video.status == 'up_next' %}
+                                <div class="status-badge badge-up-next">UP NEXT</div>
+                            {% endif %}
+
+                            <!-- Play/Lock Button -->
+                            {% if video.locked %}
+                                <div class="lock-overlay">
+                                    <i class="bi bi-lock-fill"></i>
+                                </div>
+                            {% else %}
+                                <div class="play-overlay">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                            {% endif %}
+
+                            <!-- Video Duration -->
+                            {% if video.duration %}
+                                <div class="video-duration">{{ video.duration }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Video Content -->
+                        <div class="video-content">
+                            {% if video.lesson_number %}
+                                <span class="lesson-tag">Lesson {{ video.lesson_number }}</span>
+                            {% endif %}
+
+                            <h3 class="video-title">{{ video.title }}</h3>
+
+                            {% if video.description %}
+                                <p class="video-description">{{ video.description }}</p>
+                            {% endif %}
+
+                            <!-- Video Footer Actions -->
+                            <div class="video-footer">
+                                {% if video.locked %}
+                                    <span class="locked-status">Locked</span>
+                                    {% if video.coming_soon %}
+                                        <span class="coming-soon-tag">Coming Soon</span>
+                                    {% endif %}
+                                {% elif video.status == 'watched' %}
+                                    <a href="#" class="video-action-btn">
+                                        <span>Review</span>
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </a>
+                                    {% if video.published_date %}
+                                        <span class="video-meta-info">Published {{ video.published_date }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="#" class="video-action-btn">
+                                        <span>Start Watching</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                    {% if video.published_date %}
+                                        <span class="video-meta-info">Published {{ video.published_date }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center" style="color: #64748b; padding: 3rem 0;">No videos available for this chapter.</p>
+                </div>
+            {% endif %}
+
+            <!-- Legacy video player support (if video.video_path exists) -->
+            {% if videos %}
+                {% for video in videos %}
+                    {% if video.video_path and not video.locked %}
+                        <!-- Hidden video element for backward compatibility -->
+                        <video id="video-{{ video.id }}" style="display: none;" controls>
+                            <source src="{{ url_for('static', filename=video.video_path) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Page Footer -->
+    <!-- <footer class="page-footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-copyright">
+                    © 2023 EduFlow Inc. All rights reserved.
+                </div>
+                <nav class="footer-nav">
+                    <a href="#" class="footer-link">Help Center</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                </nav>
+            </div>
+        </div>
+    </footer> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

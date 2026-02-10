@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academix</title>
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #F7F8FA;
+            color: #1A1D29;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            background: #2d54e8;
+            color: white;
+            padding: 12px 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .top-nav .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .top-nav .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: #4169ff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-tabs-custom {
+            background: transparent;
+            border: none;
+            gap: 8px;
+        }
+
+        .nav-tabs-custom .nav-link {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .nav-tabs-custom .nav-link i {
+            margin-right: 6px;
+        }
+
+        .assignments-badge {
+            background: #4169ff;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 4px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px 8px 36px;
+            border-radius: 6px;
+            width: 280px;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.5);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Back Link */
+        .back-link {
+            color: #6B7280;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #4F46E5;
+        }
+
+        /* Chapter Header */
+        .chapter-badge {
+            display: inline-block;
+            background: #EEF2FF;
+            color: #4F46E5;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .chapter-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1A1D29;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chapter-description {
+            font-size: 16px;
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 40px;
+        }
+
+        /* Progress Card */
+        .progress-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .progress-ring-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(#4F46E5 0% 60%, #E5E7EB 60% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-ring-inner {
+            width: 46px;
+            height: 46px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #4F46E5;
+        }
+
+        .progress-info h6 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1A1D29;
+            margin: 0 0 4px 0;
+        }
+
+        .progress-info p {
+            font-size: 13px;
+            color: #6B7280;
+            margin: 0;
+        }
+
+        /* Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border: 1px solid #F3F4F6;
+        }
+
+        .content-card:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon-wrapper.notes {
+            background: #EEF2FF;
+        }
+
+        .card-icon-wrapper.video {
+            background: #EFF6FF;
+        }
+
+        .card-icon-wrapper.quiz {
+            background: #F0F9FF;
+        }
+
+        .card-icon {
+            font-size: 28px;
+        }
+
+        .card-icon.notes {
+            color: #4F46E5;
+        }
+
+        .card-icon.video {
+            color: #3B82F6;
+        }
+
+        .card-icon.quiz {
+            color: #0EA5E9;
+        }
+
+        .card-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .badge-new {
+            background: #ECFDF5;
+            color: #059669;
+        }
+
+        .badge-time {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .badge-soon {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1A1D29;
+            margin-bottom: 12px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            min-height: 60px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .meta-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .card-btn {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-btn:hover {
+            background: #4338CA;
+            color: white;
+            transform: translateX(2px);
+        }
+
+        /* Supplementary Section */
+        .supplementary-section {
+            margin-top: 48px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A1D29;
+            margin-bottom: 24px;
+        }
+
+        .supplementary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .supplementary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #F3F4F6;
+        }
+
+        .supplementary-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .supp-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .supp-icon-wrapper.cheat {
+            background: #EEF2FF;
+        }
+
+        .supp-icon-wrapper.discussion {
+            background: #EFF6FF;
+        }
+
+        .supp-icon-wrapper.resources {
+            background: #F0F9FF;
+        }
+
+        .supp-icon {
+            font-size: 22px;
+        }
+
+        .supp-icon.cheat {
+            color: #4F46E5;
+        }
+
+        .supp-icon.discussion {
+            color: #3B82F6;
+        }
+
+        .supp-icon.resources {
+            color: #0EA5E9;
+        }
+
+        .supp-content h6 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1A1D29;
+            margin: 0 0 4px 0;
+        }
+
+        .supp-content p {
+            font-size: 13px;
+            color: #6B7280;
+            margin: 0;
+        }
+
+        /* Icons */
+        .icon-books::before { content: "📚"; }
+        .icon-play::before { content: "▶"; }
+        .icon-checklist::before { content: "✓"; }
+        .icon-document::before { content: "📄"; }
+        .icon-chat::before { content: "💬"; }
+        .icon-download::before { content: "⬇"; }
+        .icon-arrow::before { content: "→"; }
+        .icon-back::before { content: "‹"; }
+        .icon-pdf::before { content: "📄"; }
+        .icon-watched::before { content: "●"; }
+        .icon-time::before { content: "⏱"; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chapter-title {
+                font-size: 28px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION BAR -->
+<nav class="top-nav">
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Brand -->
+        <div class="d-flex align-items-center gap-4">
+            <a href="/dashboard" class="brand">
+                <div class="brand-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <span>Academix</span>
+            </a>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs-custom">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link active" href="/course_catalog">
+                        <i class="bi bi-book"></i> Courses
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chatbot">
+                        <i class="bi bi-robot me-2"></i> Chatbot
+                    </a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="/admin">
+                        <i class="bi bi-gear me-2"></i> Admin
+                    </a>
+                </li> -->
+                
+            </ul>
+        </div>
+
+        <!-- Right Side -->
+        <div class="d-flex align-items-center gap-3">
+            <!-- Search -->
+            <!-- <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search...">
+            </div> -->
+
+            
+
+            <!-- User Profile -->
+            <div class="user-profile">
+                <a class="nav-link" href="/profile">
+                    <div class="user-info">
+                        <div class="user-name">{% if user %}{{ user }}{% else %}Alex Morgan{% endif %}</div>
+                        <!-- <div class="user-role">Student</div> -->
+                    </div>
+                </a>
+                <a class="nav-link" href="/profile">
+                    <div class="user-avatar">                        
+                        {% if user %}{{ user[0] }}{% else %}A{% endif %}
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        
+        <!-- Back Link -->
+        <a href="/course/{{ course_id|default('overview') }}" class="back-link">
+            <span class="icon-back"></span> Back to Course Overview
+        </a>
+
+        <div class="row">
+            <div class="col-lg-9">
+                <!-- Chapter Header -->
+                <!-- <div class="chapter-badge">{{ course_name|default('MATHEMATICS 101') }}</div> -->
+                <h1 class="chapter-title">
+                    {{ chapter_title|default('Advanced Python for Data Science') }} 📚
+                </h1>
+                <p class="chapter-description">
+                    <!-- {{ chapter_description|default('Master the fundamentals of limits, derivatives, and integrals through our curated notes, video lessons, and interactive quizzes.') }} -->
+                </p>
+            </div>
+            <div class="col-lg-3">
+                <!-- Progress Card -->
+                {% if show_progress|default(true) %}
+                <div class="progress-card">
+                    <div class="progress-ring">
+                        <div class="progress-ring-circle">
+                            <div class="progress-ring-inner">{{ progress_percentage|default('60') }}%</div>
+                        </div>
+                    </div>
+                    <div class="progress-info">
+                        <h6>Chapter Progress</h6>
+                        <!-- <p>{{ completed_topics|default('3') }} of {{ total_topics|default('5') }} topics completed</p> -->
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Main Content Cards -->
+        <div class="content-grid mt-5">
+            
+            <!-- Lecture Notes Card -->
+            {% if show_notes|default(true) %}
+            <div class="content-card">
+                <div class="card-icon-wrapper notes">
+                    <span class="card-icon notes icon-document"></span>
+                </div>
+                
+                {% if notes_new_count|default(2) > 0 %}
+                <div class="card-badge badge-new">{{ notes_new_count }} New</div>
+                {% endif %}
+                
+                <h3 class="card-title">Lecture Notes</h3>
+                <p class="card-description">
+                    {{ notes_description|default('Dive into detailed written summaries, key formulas, and step-by-step problem solving guides for this chapter.') }}
+                </p>
+                
+                <div class="card-footer">
+                    <div class="card-meta">
+                        <span class="icon-pdf"></span>
+                        <span>PDF DOC</span>
+                    </div>
+                    <a href="/chapter/{{ chapter_id }}/notes" class="card-btn">
+                        View Notes <span class="icon-arrow"></span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Video Lessons Card -->
+            {% if show_videos|default(true) %}
+            <div class="content-card">
+                <div class="card-icon-wrapper video">
+                    <span class="card-icon video icon-play"></span>
+                </div>
+                
+                {% if video_duration %}
+                <div class="card-badge badge-time">{{ video_duration|default('45 Mins') }}</div>
+                {% endif %}
+                
+                <h3 class="card-title">Video Lessons</h3>
+                <p class="card-description">
+                    {{ videos_description|default('Watch expert instructors break down complex calculus problems. Includes 3 core lectures and 2 bonus walkthroughs.') }}
+                </p>
+                
+                <div class="card-footer">
+                    <div class="card-meta">
+                        <!-- <span class="icon-watched"></span>
+                        <span>{{ videos_watched|default('1') }}/{{ videos_total|default('5') }} Watched</span> -->
+                    </div>
+                    <a href="/chapter/{{ chapter_id }}/videos" class="card-btn">
+                        Watch Videos <span class="icon-play"></span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Chapter Quiz Card -->
+            {% if show_quiz|default(true) %}
+            <div class="content-card">
+                <div class="card-icon-wrapper quiz">
+                    <span class="card-icon quiz icon-checklist"></span>
+                </div>
+                
+                {% if quiz_status == 'coming_soon' %}
+                <div class="card-badge badge-soon">Due Soon</div>
+                {% endif %}
+                
+                <h3 class="card-title">Chapter Quiz</h3>
+                <p class="card-description">
+                    {{ quiz_description|default('Test your understanding of the chapter concepts. This quiz includes 20 multiple-choice questions and is timed.') }}
+                </p>
+                
+                <div class="card-footer">
+                    <div class="card-meta">
+                        <span class="icon-time"></span>
+                        <span>{{ quiz_duration|default('30') }} Mins</span>
+                    </div>
+                    <a href="/chapter/{{ chapter_id }}/quiz" class="card-btn">
+                        Take Quiz <span class="icon-checklist"></span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
