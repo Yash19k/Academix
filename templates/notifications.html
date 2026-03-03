@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+</head>
+
+<body>
+
+<!-- Header -->
+<div class="notifications-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Notifications</h2>
+                <p>Stay updated with your conversations and doubts</p>
+            </div>
+            <a href="/student/chat" class="back-button">
+                <i class="bi bi-arrow-left"></i> Back to Chat
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="notifications-container">
+        
+        <!-- Filters -->
+        <div class="notification-filters">
+            <button class="filter-btn active" onclick="filterNotifications('all')">
+                All <span class="notification-badge">{{ notifications|length }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterNotifications('unread')">
+                Unread <span class="notification-badge">{{ notifications|selectattr('is_read', 'equalto', 0)|list|length }}</span>
+            </button>
+            <button class="filter-btn" onclick="filterNotifications('new_message')">
+                Messages
+            </button>
+            <button class="filter-btn" onclick="filterNotifications('doubt_resolved')">
+                Resolved
+            </button>
+            <button class="mark-all-read" onclick="markAllAsRead()">
+                <i class="bi bi-check-all"></i> Mark All as Read
+            </button>
+        </div>
+
+        <!-- Notifications List -->
+        <div id="notificationsList">
+            {% for notif in notifications %}
+            <div class="notification-card {% if not notif.is_read %}unread{% endif %}" 
+                 data-type="{{ notif.notification_type }}"
+                 data-read="{{ notif.is_read }}"
+                 onclick="viewNotification({{ notif.id }}, {{ notif.conversation_id }})">
+                
+                <div class="notification-header">
+                    <div class="d-flex align-items-start w-100">
+                        <div class="notification-icon 
+                            {% if notif.notification_type == 'new_message' %}message
+                            {% elif notif.notification_type == 'doubt_assigned' %}assigned
+                            {% elif notif.notification_type == 'doubt_resolved' %}resolved
+                            {% else %}status{% endif %}">
+                            {% if notif.notification_type == 'new_message' %}
+                                <i class="bi bi-chat-fill"></i>
+                            {% elif notif.notification_type == 'doubt_assigned' %}
+                                <i class="bi bi-person-check-fill"></i>
+                            {% elif notif.notification_type == 'doubt_resolved' %}
+                                <i class="bi bi-check-circle-fill"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle-fill"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="notification-content">
+                            <div class="notification-type">
+                                {{ notif.notification_type.replace('_', ' ').title() }}
+                            </div>
+                            <h6 class="notification-title">{{ notif.doubt_subject }}</h6>
+                            <p class="notification-message">{{ notif.message }}</p>
+                            
+                            <div class="notification-meta">
+                                <div class="notification-time">
+                                    <i class="bi bi-clock"></i>
+                                    {{ notif.time_ago }}
+                                </div>
+                                {% if not notif.is_read %}
+                                <div class="unread-indicator"></div>
+                                {% endif %}
+                                <div class="notification-actions">
+                                    <a href="/student/chat?conversation={{ notif.conversation_id }}" 
+                                       class="action-link"
+                                       onclick="event.stopPropagation()">
+                                        View Chat <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-bell-slash"></i>
+                <h4>No notifications yet</h4>
+                <p>You'll see updates about your doubts and messages here</p>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Filter notifications
+    function filterNotifications(filter) {
+        // Update active filter button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Filter notification cards
+        const cards = document.querySelectorAll('.notification-card');
+        cards.forEach(card => {
+            const type = card.dataset.type;
+            const isRead = card.dataset.read === '1';
+
+            if (filter === 'all') {
+                card.style.display = 'block';
+            } else if (filter === 'unread') {
+                card.style.display = !isRead ? 'block' : 'none';
+            } else {
+                card.style.display = type === filter ? 'block' : 'none';
+            }
+        });
+    }
+
+    // View notification
+    function viewNotification(notificationId, conversationId) {
+        // Mark as read
+        fetch(`/notifications/mark-read/${notificationId}`, {
+            method: 'POST'
+        });
+
+        // Redirect to chat
+        window.location.href = `/student/chat?conversation=${conversationId}`;
+    }
+
+    // Mark all as read
+    function markAllAsRead() {
+        if (confirm('Mark all notifications as read?')) {
+            const unreadCards = document.querySelectorAll('.notification-card.unread');
+            const promises = [];
+
+            unreadCards.forEach(card => {
+                const notificationId = card.onclick.toString().match(/viewNotification\((\d+)/)[1];
+                promises.push(
+                    fetch(`/notifications/mark-read/${notificationId}`, {
+                        method: 'POST'
+                    })
+                );
+            });
+
+            Promise.all(promises).then(() => {
+                window.location.reload();
+            });
+        }
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(() => {
+        // Check for new notifications
+        fetch('/api/check-notifications')
+            .then(response => response.json())
+            .then(data => {
+                if (data.has_new) {
+                    // Show notification badge or reload
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) {
+                        badge.textContent = parseInt(badge.textContent) + data.new_count;
+                    }
+                }
+            });
+    }, 30000);
+</script>
+
+</body>
+</html>
+
+{% endblock %}

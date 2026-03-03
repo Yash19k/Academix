@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ATS Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #6c63ff;
+            --primary-dark: #5a52e0;
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --bg: #f5f5fa;
+            --card: #ffffff;
+            --text: #1a1a2e;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        nav {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-logo {
+            width: 36px; height: 36px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-logo svg { color: #fff; }
+        .nav-brand-text { line-height: 1.1; }
+        .nav-brand-text .name { font-weight: 800; font-size: 0.95rem; color: var(--text); }
+        .nav-brand-text .edition { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-links a { text-decoration: none; color: var(--muted); font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        .btn-upload {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: background 0.2s;
+        }
+        .btn-upload:hover { background: var(--primary-dark); }
+
+        /* MAIN */
+        main { max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+        /* HERO */
+        .hero { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.5rem; gap: 1.5rem; }
+        .hero-left { flex: 1; }
+        .role-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #ede9fe; color: var(--primary);
+            font-size: 0.8rem; font-weight: 700;
+            padding: 5px 12px; border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+        .hero-title { font-size: 2.4rem; font-weight: 800; line-height: 1.1; margin-bottom: 0.75rem; }
+        .hero-sub { color: var(--muted); font-size: 0.95rem; max-width: 420px; line-height: 1.6; }
+
+        .score-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            min-width: 220px;
+        }
+        .score-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .score-ring { position: relative; width: 120px; height: 120px; margin: 0 auto 0.75rem; }
+        .score-ring svg { transform: rotate(-90deg); }
+        .score-ring .ring-bg { fill: none; stroke: #e5e7eb; stroke-width: 8; }
+        .score-ring .ring-fill { fill: none; stroke: var(--green); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
+        .score-number {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.4rem; font-weight: 800; color: var(--text);
+        }
+        .score-verdict {
+            display: inline-block;
+            background: #dcfce7; color: #15803d;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+            text-transform: uppercase; padding: 4px 12px; border-radius: 20px;
+        }
+
+        /* GRID */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 1.1rem;
+        }
+        .card-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .icon-green { background: #dcfce7; }
+        .icon-amber { background: #fef3c7; }
+        .icon-red { background: #fee2e2; }
+        .icon-blue { background: #dbeafe; }
+        .icon-purple { background: #ede9fe; }
+
+        .card-title { font-weight: 700; font-size: 1rem; }
+
+        .item-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+        .item-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.875rem; color: #374151; }
+        .item-list li::before { flex-shrink: 0; margin-top: 1px; }
+        .list-green li::before { content: '✓'; color: var(--green); font-weight: 700; }
+        .list-amber li::before { content: '!'; color: var(--amber); font-weight: 700; }
+
+        /* KEYWORDS */
+        .keywords-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.5; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag {
+            background: #fce7f3; color: #9d174d;
+            font-size: 0.78rem; font-weight: 600;
+            padding: 5px 14px; border-radius: 20px;
+        }
+
+        /* SUGGESTIONS */
+        .suggestions { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+        .suggestions li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.875rem; color: #374151; }
+        .sug-num {
+            flex-shrink: 0;
+            width: 24px; height: 24px;
+            background: var(--primary); color: #fff;
+            border-radius: 50%;
+            font-size: 0.72rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* SECTION ANALYSIS */
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 1.25rem; }
+        .sections-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .section-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .section-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .section-icon { font-size: 1.2rem; }
+        .section-info { color: #d1d5db; font-size: 0.75rem; cursor: pointer; }
+        .section-name { font-weight: 700; font-size: 0.875rem; margin-bottom: 0.4rem; }
+        .section-feedback { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+        /* VERDICT */
+        .verdict-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+        .verdict-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 1.25rem; }
+        .verdict-box {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            font-size: 0.9rem; color: #374151; line-height: 1.7;
+        }
+
+        /* FOOTER ACTIONS */
+        .footer-actions { display: flex; justify-content: flex-end; gap: 1rem; }
+        .btn-secondary {
+            background: #fff;
+            color: var(--text);
+            border: 1.5px solid var(--border);
+            padding: 0.65rem 1.4rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600; font-size: 0.875rem;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: border-color 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.65rem 1.4rem;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600; font-size: 0.875rem;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .main-navbar {
+    width: 100%;
+    background: white;
+    padding: 18px 5%;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.nav-menu a:hover {
+    color: #2563eb;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-login {
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-login:hover {
+    background: #f1f5f9;
+}
+
+.btn-signup {
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-signup:hover {
+    background: #1d4ed8;
+}
+.nav-menu a {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 6px 4px;
+    position: relative;
+    transition: 0.2s;
+}
+
+/* Hover */
+.nav-menu a:hover {
+    color: #2563eb;
+}
+
+/* Active Page */
+.active-link {
+    color: #2563eb !important;
+    font-weight: 600;
+}
+
+/* Modern Underline Indicator */
+.active-link::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #2563eb;
+    border-radius: 3px;
+}
+        @media (max-width: 700px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .sections-grid { grid-template-columns: 1fr 1fr; }
+            .hero { flex-direction: column; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+
+<main>
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-left">
+            <div class="role-badge">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+                Role Analyzed: {{ role }}
+            </div>
+            <h1 class="hero-title">AI Analysis Report</h1>
+            <p class="hero-sub">Our AI has scanned your resume against thousands of job descriptions to provide this detailed compatibility assessment.</p>
+        </div>
+        <div class="score-card">
+            <div class="score-label">ATS Score</div>
+            <div class="score-ring">
+                <svg viewBox="0 0 120 120" width="120" height="120">
+                    <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                    <circle class="ring-fill" cx="60" cy="60" r="50"
+                        stroke-dasharray="314"
+                        stroke-dashoffset="calc(314 - (314 * {{ result.ats_score }} / 100))"/>
+                </svg>
+                <div class="score-number">{{ result.ats_score }}</div>
+            </div>
+            <span class="score-verdict">Excellent Match</span>
+        </div>
+    </div>
+
+    <!-- STRENGTHS + WEAKNESSES -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon icon-green">✅</div>
+                <span class="card-title">Key Strengths</span>
+            </div>
+            <ul class="item-list list-green">
+                {% for s in result.strengths %}
+                <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon icon-amber">⚠️</div>
+                <span class="card-title">Areas for Improvement</span>
+            </div>
+            <ul class="item-list list-amber">
+                {% for w in result.weaknesses %}
+                <li>{{ w }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- MISSING KEYWORDS + SUGGESTIONS -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon icon-red">🔑</div>
+                <span class="card-title">Missing Keywords</span>
+            </div>
+            <p class="keywords-desc">These critical keywords were found in the job description but are missing from your resume.</p>
+            <div class="tags">
+                {% for k in result.missing_keywords %}
+                <span class="tag">{{ k }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon icon-purple">✨</div>
+                <span class="card-title">Strategic Suggestions</span>
+            </div>
+            <ul class="suggestions">
+                {% for sug in result.improvement_suggestions %}
+                <li>
+                    <span class="sug-num">{{ loop.index }}</span>
+                    <span>{{ sug }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- SECTION ANALYSIS -->
+    <div class="verdict-card">
+        <h2 class="section-title">Detailed Section Analysis</h2>
+        <div class="sections-grid">
+            <div class="section-card">
+                <div class="section-card-header">
+                    <span class="section-icon">🎓</span>
+                    <span class="section-info">ⓘ</span>
+                </div>
+                <div class="section-name">Education</div>
+                <div class="section-feedback">{{ result.section_feedback.education }}</div>
+            </div>
+            <div class="section-card">
+                <div class="section-card-header">
+                    <span class="section-icon">💼</span>
+                    <span class="section-info">ⓘ</span>
+                </div>
+                <div class="section-name">Experience</div>
+                <div class="section-feedback">{{ result.section_feedback.experience }}</div>
+            </div>
+            <div class="section-card">
+                <div class="section-card-header">
+                    <span class="section-icon">🚀</span>
+                    <span class="section-info">ⓘ</span>
+                </div>
+                <div class="section-name">Projects</div>
+                <div class="section-feedback">{{ result.section_feedback.projects }}</div>
+            </div>
+            <div class="section-card">
+                <div class="section-card-header">
+                    <span class="section-icon">📍</span>
+                    <span class="section-info">ⓘ</span>
+                </div>
+                <div class="section-name">Skills</div>
+                <div class="section-feedback">{{ result.section_feedback.skills }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINAL VERDICT -->
+    <div class="verdict-card">
+        <h2 class="verdict-title">Final Verdict</h2>
+        <div class="verdict-box">
+            {{ result.final_verdict }}
+        </div>
+    </div>
+
+    <!-- FOOTER ACTIONS -->
+    <div class="footer-actions">
+        <!-- <button class="btn-secondary">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Re-Analyze Resume
+        </button> -->
+        <a href="{{ url_for('ai_recommendations') }}" class="btn-primary d-inline-flex align-items-center gap-2">
+    Find Matching Internships
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+</a>
+    </div>
+</main>
+
+</body>
+</html>

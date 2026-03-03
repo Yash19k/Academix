@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Resume Checker – SkillSync AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ats_checker.css') }}">
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="main-navbar">
+    <div class="nav-wrapper">
+
+        <!-- Logo -->
+        <div class="nav-logo">
+            Academix
+        </div>
+
+        <!-- Menu -->
+        <div class="nav-menu">
+            <a href="/dashboard"
+               class="{% if request.path == '/dashboard' %}active-link{% endif %}">
+               Dashboard
+            </a>
+
+            <a href="/course_catalog"
+               class="{% if request.path == '/course_catalog' %}active-link{% endif %}">
+               Courses
+            </a>
+
+            <a href="/chatbot"
+               class="{% if request.path == '/chatbot' %}active-link{% endif %}">
+               Chatbot
+            </a>
+
+            <a href="/leaderboard"
+               class="{% if request.path == '/leaderboard' %}active-link{% endif %}">
+               Leaderboard
+            </a>
+
+            <a href="/ats-checker"
+               class="{% if request.path == '/ats-checker' %}active-link{% endif %}">
+               ATS Checker
+            </a>
+
+            <a href="/ai-recommendations"
+               class="{% if request.path == '/ai-recommendations' %}active-link{% endif %}">
+               Find Internships
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+    <h1>Smart AI-Powered<br><span>ATS Resume Analysis</span></h1>
+    <p>Optimize your resume for specific job roles and beat Applicant Tracking Systems with 99% accuracy. Get hired faster.</p>
+
+    <!-- ── FORM CARD ── -->
+    <div class="form-card">
+        <form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+
+            <div class="form-group">
+                <label class="form-label">Target Role</label>
+                <div class="select-wrapper">
+                    <select name="role">
+                        {% for role in roles %}
+                        <option value="{{ role.id }}">{{ role.role_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Upload Resume</label>
+                <div class="drop-zone" id="dropZone">
+                    <input type="file" name="resume" accept=".pdf,.docx" required
+                           onchange="handleFileSelect(this)">
+                    <div class="upload-icon">⬆</div>
+                    <h4>Click to upload or drag and drop</h4>
+                    <p>PDF, DOCX up to 10MB</p>
+                </div>
+                <div id="fileName"></div>
+            </div>
+
+            <button type="submit" class="btn-analyze">
+                ✦ Analyze Resume
+            </button>
+
+        </form>
+
+        {% if error %}
+            <div class="alert">{{ error }}</div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ── TRUSTED ── -->
+<div class="trusted">
+    <div class="trusted-label">TRUSTED BY CANDIDATES HIRED AT</div>
+    <div class="trusted-logos">
+        <span>Google</span>
+        <span>Amazon</span>
+        <span>IBM</span>
+        <span>Microsoft</span>
+    </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCANNING OVERLAY
+════════════════════════════════ -->
+<div id="atsLoader" class="ats-loader-overlay">
+    <div class="ats-loader-card">
+
+        <div class="loader-logo">
+            <div class="logo-icon">📄</div>
+            SkillSync AI
+        </div>
+
+        <!-- Resume Preview Mock -->
+        <div class="resume-mock">
+            <div class="mock-header">
+                <div class="mock-avatar"></div>
+                <div class="mock-name-block">
+                    <div class="mock-line w-80"></div>
+                    <div class="mock-line w-60"></div>
+                </div>
+            </div>
+            <div class="mock-lines-group">
+                <div class="mock-line w-full"></div>
+                <div class="mock-line w-80"></div>
+                <div class="mock-line w-70"></div>
+                <div class="mock-line w-full"></div>
+                <div class="mock-line w-60"></div>
+            </div>
+            <div class="mock-lines-group">
+                <div class="mock-line w-80"></div>
+                <div class="mock-line w-50"></div>
+            </div>
+            <div class="mock-line w-30"></div>
+
+            <div class="pdf-badge">PDF</div>
+            <div class="scanner-beam"></div>
+        </div>
+
+        <!-- Progress -->
+        <div class="scan-percent"><span id="progressPercent">0</span><sup>%</sup></div>
+        <div class="scan-phase" id="scanPhase">Matching Keywords...</div>
+        <div class="scan-sub" id="scanSub">Starting analysis...</div>
+
+        <div class="scan-bar-track">
+            <div class="scan-bar-fill" id="scanBarFill"></div>
+        </div>
+
+        <button class="btn-cancel" onclick="cancelScan()">✕ &nbsp;Cancel Scan</button>
+    </div>
+
+    <div class="secure-note">🔒 Your data is encrypted and secure</div>
+</div>
+
+
+<script>
+    // Drag & drop visual
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', () => dropZone.classList.remove('dragover'));
+
+    function handleFileSelect(input) {
+        const el = document.getElementById('fileName');
+        if (input.files.length) {
+            el.textContent = '📎 ' + input.files[0].name;
+            el.style.display = 'block';
+        }
+    }
+
+    function showLoader() {
+        const loader   = document.getElementById('atsLoader');
+        const progress = document.getElementById('progressPercent');
+        const phase    = document.getElementById('scanPhase');
+        const sub      = document.getElementById('scanSub');
+        const bar      = document.getElementById('scanBarFill');
+
+        loader.style.display = 'flex';
+
+        const steps = [
+            { at: 0,   ph: 'Parsing Resume...',      sb: 'Reading document structure'          },
+            { at: 20,  ph: 'Extracting Skills...',   sb: 'Identifying technical skills'        },
+            { at: 45,  ph: 'Matching Keywords...',   sb: 'Parsing experience and technical skills' },
+            { at: 70,  ph: 'ATS Simulation...',      sb: 'Running compatibility checks'        },
+            { at: 90,  ph: 'Finalizing Report...',   sb: 'Calculating final ATS score'         },
+            { at: 100, ph: 'Complete!',              sb: 'Loading your results...'             },
+        ];
+
+        let pct = 0;
+        const iv = setInterval(() => {
+            pct++;
+            progress.textContent = pct;
+            bar.style.width = pct + '%';
+
+            steps.forEach(s => {
+                if (pct === s.at) {
+                    phase.textContent = s.ph;
+                    sub.textContent   = s.sb;
+                }
+            });
+
+            if (pct >= 100) clearInterval(iv);
+        }, 30);
+    }
+
+    function cancelScan() {
+        document.getElementById('atsLoader').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

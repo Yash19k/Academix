@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Notes - EduFlow</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notes.css') }}">
+</head>
+
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-navbar">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-4">
+            <a href="/" class="logo">
+                <i class="bi bi-mortarboard-fill"></i>
+                <span>EduFlow</span>
+            </a>
+            <ul class="nav-links d-none d-md-flex">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/courses">My Courses</a></li>
+                <li><a href="/notes" class="active">Notes</a></li>
+                <li><a href="/schedule">Schedule</a></li>
+            </ul>
+        </div>
+        <div class="user-section">
+            <button class="notification-btn">
+                <i class="bi bi-bell"></i>
+            </button>
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-name">Alex Student</div>
+                    <div class="user-role">Computer Science</div>
+                </div>
+                <div class="avatar">
+                    <img src="https://ui-avatars.com/api/?name=Alex+Student&background=2D54E8&color=fff" alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container my-4">
+    
+    <!-- Back Link -->
+    <a href="javascript:history.back()" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to Physics 101
+    </a>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>Subject Notes</h1>
+        <p>Manage and access all your study materials for this semester.</p>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="controls-row">
+        <div class="search-filter-group">
+            <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search specific notes...">
+            </div>
+            <button class="filter-btn">
+                <i class="bi bi-funnel"></i>
+                Filters
+            </button>
+        </div>
+        <button class="upload-btn">
+            <i class="bi bi-upload"></i>
+            Upload Note
+        </button>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="filter-tab active">All Notes</button>
+        <button class="filter-tab">Lectures</button>
+        <button class="filter-tab">Assignments</button>
+        <button class="filter-tab">Study Guides</button>
+        <button class="filter-tab">Lab Reports</button>
+    </div>
+
+    <!-- Notes Grid -->
+    <div class="notes-grid">
+        
+        {% if notes %}
+            {% for note in notes %}
+            <div class="note-card">
+                <div class="card-header">
+                    <div class="note-icon {% if note.type == 'doc' %}doc{% elif note.type == 'image' %}image{% elif note.locked %}locked{% endif %}">
+                        {% if note.type == 'doc' %}
+                        <i class="bi bi-file-earmark-text"></i>
+                        {% elif note.type == 'image' %}
+                        <i class="bi bi-image"></i>
+                        {% elif note.locked %}
+                        <i class="bi bi-lock"></i>
+                        {% else %}
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        {% endif %}
+                    </div>
+                    <button class="note-menu">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                </div>
+                
+                <h3>{{ note.title }}</h3>
+                
+                <div class="note-meta">
+                    <span class="category">
+                        {% if note.category %}
+                            {{ note.category }}
+                        {% else %}
+                            Physics 101 • Cheat Sheet
+                        {% endif %}
+                    </span>
+                    <div class="details">
+                        <span>
+                            <i class="bi bi-calendar3"></i>
+                            {% if note.date %}{{ note.date }}{% else %}Oct 20{% endif %}
+                        </span>
+                        <span>•</span>
+                        <span>
+                            {% if note.size %}{{ note.size }}{% else %}11 MB{% endif %}
+                        </span>
+                        {% if note.format %}
+                        <span>•</span>
+                        <span>{{ note.format }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="note-actions">
+                    {% if note.locked %}
+                        <button class="btn-locked">Locked</button>
+                        <button class="btn-locked">Download</button>
+                    {% else %}
+                        <a href="{{ url_for('static', filename=note.file_path) }}" target="_blank" class="btn-view">View</a>
+                        <a href="{{ url_for('static', filename=note.file_path) }}" download class="btn-download">Download</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <p class="text-center text-muted">No notes available for this chapter.</p>
+            </div>
+        {% endif %}
+
+        <!-- Upload Zone Card -->
+        <div class="upload-zone">
+            <div class="icon">
+                <i class="bi bi-plus-lg"></i>
+            </div>
+            <h4>Upload New Note</h4>
+            <p>Drag & drop or click to upload</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

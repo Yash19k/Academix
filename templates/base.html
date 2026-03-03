@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Student Learning Platform{% endblock %}</title>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav>
+    <h3>Student Learning Platform</h3>
+
+    <!-- Common Links -->
+    <a href="/dashboard">Dashboard</a> |
+    <a href="/courses">Courses</a> |
+    <a href="/chatbot">AI Chatbot</a> |
+    <a href="/my-doubts">My Doubts</a> |
+    <a href="/ask-doubt">Ask Doubt</a> |
+    <a href="/profile">Profile</a> |
+    
+    <!-- Mentor Links -->
+    <a href="/mentor-dashboard">Mentor Dashboard</a> |
+
+    <!-- Auth -->
+    <a href="/logout">Logout</a>
+</nav>
+
+<hr>
+
+<!-- ================= PAGE CONTENT ================= -->
+{% block content %}
+{% endblock %}
+
+<hr>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+
+    <h4>Contact Information</h4>
+    <p>Email: support@studentplatform.com</p>
+    <p>Phone: +91 98765 43210</p>
+    <p>Address: Ahmedabad, Gujarat, India</p>
+
+    <hr>
+
+    <p>
+        <a href="/">Home</a> |
+        <a href="/courses">Courses</a> |
+        <a href="/login">Login</a> |
+        <a href="/register">Register</a>
+    </p>
+
+    <p>&copy; 2026 Student Learning Platform. All rights reserved.</p>
+
+</footer>
+
+</body>
+</html>

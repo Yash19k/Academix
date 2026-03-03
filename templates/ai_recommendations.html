@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InternMatch AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ai_recommendations.css') }}">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-navbar">
+    <div class="nav-wrapper">
+
+        <!-- Logo -->
+        <div class="nav-logo">
+            Academix
+        </div>
+
+        <!-- Menu -->
+        <div class="nav-menu">
+            <a href="/dashboard"
+               class="{% if request.path == '/dashboard' %}active-link{% endif %}">
+               Dashboard
+            </a>
+
+            <a href="/course_catalog"
+               class="{% if request.path == '/course_catalog' %}active-link{% endif %}">
+               Courses
+            </a>
+
+            <a href="/chatbot"
+               class="{% if request.path == '/chatbot' %}active-link{% endif %}">
+               Chatbot
+            </a>
+
+            <a href="/leaderboard"
+               class="{% if request.path == '/leaderboard' %}active-link{% endif %}">
+               Leaderboard
+            </a>
+
+            <a href="/ats-checker"
+               class="{% if request.path == '/ats-checker' %}active-link{% endif %}">
+               ATS Checker
+            </a>
+
+            <a href="/ai-recommendations"
+               class="{% if request.path == '/ai-recommendations' %}active-link{% endif %}">
+               Find Internships
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+<div class="page-body">
+
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="sidebar-title">
+            Filters
+            <button class="reset-btn" onclick="resetFilters()">Reset All</button>
+        </div>
+
+        <!-- Match % -->
+        <div class="filter-section">
+            <div class="filter-label d-flex justify-content-between">
+                Minimum Match %
+                <span class="filter-value" id="matchValue">0%</span>
+            </div>
+            <input type="range" min="0" max="100" value="0" id="matchFilter">
+            <div class="range-labels"><span>0%</span><span>100%</span></div>
+        </div>
+
+        <!-- Location -->
+       <div class="filter-section">
+            <div class="filter-label">Location</div>
+            <ul class="option-list">
+                {% for loc in locations %}
+                <li>
+                    <input type="checkbox" class="location-filter" value="{{ loc }}" checked>
+                    <label>{{ loc }}</label>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Job Type -->
+        <div class="filter-section" style="display: none;">
+            <div class="filter-label">Job Type</div>
+            <div class="chip-group">
+                {% for type in job_types %}
+                <button class="chip active job-filter"
+                        data-type="{{ type }}"
+                        onclick="toggleChip(this)">
+                    {{ type }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Stipend -->
+        <div class="filter-section">
+            <div class="filter-label">Min. Stipend</div>
+            <select id="stipendFilter" class="filter-select">
+                <option value="0">Any Amount</option>
+                <option value="15000">₹15,000 / month</option>
+                <option value="20000">₹20,000 / month</option>
+                <option value="25000">₹25,000 / month</option>
+                <option value="30000">₹30,000 / month</option>
+                <option value="35000">₹35,000 / month</option>
+            </select>
+        </div>
+
+        
+    </aside>
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div>
+                <div class="hero-tag">✦ PERSONALIZED FOR YOU</div>
+                <h1>AI-Powered Internship<br>Recommendations</h1>
+                <p>Based on your resume skills and ATS analysis. We've curated high-potential opportunities tailored to your profile.</p>
+            </div>
+            <button class="update-resume-btn">
+                
+                <a class="nav-link" href="/ats-checker">
+                         📄 Update Resume
+                    </a>
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Internships</div>
+                <div class="stat-value">
+                    {{ total_internships }}
+                    {% if new_count > 0 %}
+                        <span class="new-badge">+{{ new_count }} new</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Highest Match %</div>
+                <div class="stat-value purple">
+                    {% if internships %}{{ internships|map(attribute='match_percent')|max }}%{% else %}—{% endif %}
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Match %</div>
+                <div class="stat-value">
+                    {% if internships %}{{ (internships|map(attribute='match_percent')|sum / internships|length)|round|int }}%{% else %}—{% endif %}
+                </div>
+                <div class="stat-sub">Across all jobs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Top Matching Skills</div>
+
+                <div style="margin-top:8px">
+                    {% if top_skills %}
+                        {% for skill in top_skills %}
+                            <span class="skill-tag">
+                                {{ skill | capitalize }}
+                            </span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="text-muted">No strong matches yet</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section header -->
+        <div class="section-header">
+            <h2>Top Recommendations</h2>
+            <select class="sort-select" id="sortSelect">
+                <option value="high">Match Score (High to Low)</option>
+                <option value="low">Match Score (Low to High)</option>
+            </select>
+        </div>
+
+        <!-- TOP 3 CARDS (grid) -->
+        <div class="top-cards" id="topCardsContainer">
+            {% for internship in internships[:3] %}
+            <div class="top-card internship-card"
+            data-match="{{ internship.match_percent }}"
+            data-location="{{ internship.location }}"
+            data-jobtype="{{ internship.job_type }}"
+            data-stipend="{{ internship.stipend_amount }}">
+                <div class="top-card-head">
+                    <div class="company-icon">🏢</div>
+                    <div class="match-ring">
+                        <div class="match-circle
+                            {% if internship.match_percent >= 80 %}green
+                            {% elif internship.match_percent >= 60 %}blue
+                            {% elif internship.match_percent >= 40 %}orange
+                            {% else %}red{% endif %}">
+                            {{ internship.match_percent }}%
+                        </div>
+                        <span class="match-label
+                            {% if internship.match_percent >= 80 %}green
+                            {% elif internship.match_percent >= 60 %}blue
+                            {% elif internship.match_percent >= 40 %}orange
+                            {% else %}red{% endif %}">
+                            {% if internship.match_percent >= 80 %}Perfect
+                            {% elif internship.match_percent >= 60 %}High
+                            {% elif internship.match_percent >= 40 %}Good
+                            {% else %}Low{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <h4>{{ internship.role_name }}</h4>
+                <div class="company-name">{{ internship.company_name }}</div>
+                <div class="meta">📍 {{ internship.location }}</div>
+                <div class="meta">💼 {{ internship.stipend }}</div>
+                <div>
+                    {% for skill in internship.matching_skills %}
+                        <span class="skill-pill-sm match"><span class="check">✓</span> {{ skill }}</span>
+                    {% endfor %}
+                    {% for skill in internship.missing_skills %}
+                        <span class="skill-pill-sm missing"><span class="cross">✗</span> {{ skill }}</span>
+                    {% endfor %}
+                </div>
+                <p class="desc">{{ internship.description|truncate(80) }}</p>
+                <div class="card-actions">
+                    <!-- <button class="btn-view">View Details</button> -->
+                    <form method="POST" action="/apply_internship/{{ internship.id }}" style="flex:1">
+                        <button type="button"
+                                class="btn-apply"
+                                style="width:100%"
+                                onclick="markApplied(this)">
+                            Apply Now
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- REMAINING CARDS (list) -->
+        <div id="internshipContainer">
+            {% for internship in internships[3:] %}
+            <div class="list-card internship-card"
+            data-match="{{ internship.match_percent }}"
+            data-location="{{ internship.location }}"
+            data-jobtype="{{ internship.job_type }}"
+            data-stipend="{{ internship.stipend_amount }}">
+                <div class="list-card-left">
+                    <h4>{{ internship.role_name }}</h4>
+                    <div class="meta">{{ internship.company_name }} &bull; {{ internship.location }} &bull; {{ internship.stipend }}</div>
+                    <p>{{ internship.description }}</p>
+                    <div class="skills-row">
+                        {% for skill in internship.matching_skills %}
+                            <span class="skill-pill-sm match"><span class="check">✓</span> {{ skill }}</span>
+                        {% endfor %}
+                        {% for skill in internship.missing_skills %}
+                            <span class="skill-pill-sm missing"><span class="cross">✗</span> {{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="list-card-right">
+                    <div class="match-badge-lg
+                        {% if internship.match_percent >= 80 %}green
+                        {% elif internship.match_percent >= 60 %}blue
+                        {% elif internship.match_percent >= 40 %}orange
+                        {% else %}red{% endif %}"
+                        style="
+                        border-color:
+                        {% if internship.match_percent >= 80 %}var(--green)
+                        {% elif internship.match_percent >= 60 %}var(--blue)
+                        {% elif internship.match_percent >= 40 %}var(--orange)
+                        {% else %}var(--red){% endif %};
+                        color:
+                        {% if internship.match_percent >= 80 %}var(--green)
+                        {% elif internship.match_percent >= 60 %}var(--blue)
+                        {% elif internship.match_percent >= 40 %}var(--orange)
+                        {% else %}var(--red){% endif %}">
+                        {{ internship.match_percent }}%
+                    </div>
+                    <form method="POST" action="/apply_internship/{{ internship.id }}">
+                        <button class="apply-btn-sm">Apply Now</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </main>
+</div>
+
+<script>
+function markApplied(button) {
+    button.innerText = "Applied";
+    button.style.background = "#22c55e";
+    button.style.color = "white";
+    button.disabled = true;
+}
+function toggleChip(btn){
+    btn.classList.toggle("active");
+    applyFilters();
+}
+
+document.querySelectorAll(".location-filter").forEach(cb=>{
+    cb.addEventListener("change", applyFilters);
+});
+
+document.getElementById("stipendFilter").addEventListener("change", applyFilters);
+
+function sortByMatch() {
+    const container = document.getElementById("internshipContainer");
+    const cards = Array.from(container.querySelectorAll(".internship-card"));
+
+    cards.sort((a, b) => {
+        return b.dataset.match - a.dataset.match;
+    });
+
+    cards.forEach(card => container.appendChild(card));
+}
+window.onload = sortByMatch;
+
+function applyFilters(){
+
+    let selectedLocations = Array.from(
+        document.querySelectorAll(".location-filter:checked")
+    ).map(cb=>cb.value);
+
+    let selectedTypes = Array.from(
+        document.querySelectorAll(".job-filter.active")
+    ).map(btn=>btn.dataset.type);
+
+    let minStipend = parseInt(
+        document.getElementById("stipendFilter").value
+    );
+
+    document.querySelectorAll(".internship-card").forEach(card=>{
+
+        let location = card.dataset.location;
+        let jobType = card.dataset.jobtype;
+        let stipend = parseInt(card.dataset.stipend);
+
+        let show =
+            selectedLocations.includes(location) &&
+            selectedTypes.includes(jobType) &&
+            stipend >= minStipend;
+
+        card.style.display = show ? "block" : "none";
+    });
+}
+
+    // Range slider live color update
+    const slider = document.getElementById("matchFilter");
+    const matchVal = document.getElementById("matchValue");
+
+    function updateSlider() {
+        const pct = slider.value + '%';
+        slider.style.setProperty('--range-pct', pct);
+        matchVal.textContent = pct;
+
+        document.querySelectorAll(".internship-card").forEach(card => {
+            const match = parseInt(card.dataset.match);
+            card.style.display = match >= parseInt(slider.value) ? "" : "none";
+        });
+    }
+
+    slider.addEventListener("input", updateSlider);
+
+    // Sort
+    document.getElementById("sortSelect").addEventListener("change", function () {
+        const container = document.getElementById("internshipContainer");
+        const cards = Array.from(container.querySelectorAll(".internship-card"));
+        const top = document.getElementById("topCardsContainer");
+        const topCards = Array.from(top.querySelectorAll(".top-card"));
+
+        const sortFn = this.value === "high"
+            ? (a, b) => b.dataset.match - a.dataset.match
+            : (a, b) => a.dataset.match - b.dataset.match;
+
+        topCards.sort(sortFn).forEach(c => top.appendChild(c));
+        cards.sort(sortFn).forEach(c => container.appendChild(c));
+    });
+
+    // Chip toggle
+    function toggleChip(el) {
+        el.classList.toggle("active");
+    }
+
+    // Reset
+    function resetFilters() {
+        slider.value = 0;
+        updateSlider();
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.option-list input').forEach(i => i.checked = false);
+    }
+</script>
+
+</body>
+</html>

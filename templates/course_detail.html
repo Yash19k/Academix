@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} - Academix</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/course_detail.css') }}">
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav class="main-navbar">
+    <div class="nav-wrapper">
+
+        <!-- Logo -->
+        <div class="nav-logo">
+            Academix
+        </div>
+
+        <!-- Menu -->
+        <div class="nav-menu">
+            <a href="/dashboard"
+               class="{% if request.path == '/dashboard' %}active-link{% endif %}">
+               Dashboard
+            </a>
+
+            <a href="/course_catalog"
+               class="active-link">
+               Courses
+            </a>
+
+            <a href="/chatbot"
+               class="{% if request.path == '/chatbot' %}active-link{% endif %}">
+               Chatbot
+            </a>
+
+            <a href="/leaderboard"
+               class="{% if request.path == '/leaderboard' %}active-link{% endif %}">
+               Leaderboard
+            </a>
+
+            <a href="/ats-checker"
+               class="{% if request.path == '/ats-checker' %}active-link{% endif %}">
+               ATS Checker
+            </a>
+
+            <a href="/ai-recommendations"
+               class="{% if request.path == '/ai-recommendations' %}active-link{% endif %}">
+               Find Internships
+            </a>
+        </div>
+
+    </div>
+</nav>
+    
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-custom">
+                            <li class="breadcrumb-item">Courses</li>
+                            <!-- <li class="breadcrumb-item"><a href="#">{{ course.category }}</a></li> -->
+                            <li class="breadcrumb-item active">{{ course.title }}</li>
+                        </ol>
+                    </nav>
+                    
+                    <!-- Level Badge -->
+                    <div class="badge-level">
+                        <i class="bi bi-star-fill"></i>
+                        INTERMEDIATE
+                        <span style="margin-left: 0.5rem;">⭐ 4.8</span>
+                    </div>
+                    
+                    <!-- Course Title -->
+                    <h1 class="course-title">{{ course.title }}</h1>
+                    
+                    <!-- Description -->
+                    <p class="course-description">
+                        {{ course.description }}
+                    </p>
+                    
+                    <!-- Instructors -->
+                    <div class="instructor-info">
+                         
+                        <div>
+                            <div class="instructor-label">Faculty</div>
+                            <div class="instructor-names"><p>  {{ course.faculty_name }}</p></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <!-- Progress Card -->
+                    <div class="progress-card">
+                        <div class="d-flex align-items-center mb-2">
+                            <div>Course Progress</div>
+                            <div class="progress-percentage">
+    {{ course_progress }}%
+</div>
+
+                        </div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: {{ course_progress }}%;"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container content-section">
+        <div class="row">
+            <!-- Left Column - Syllabus -->
+            <div class="col-lg-8">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5>Course Syllabus</h5>
+                        
+                    </div>
+                    
+                    <ul class="syllabus-list">
+
+    {% if modules %}
+        {% for module in modules %}
+        <li class="syllabus-item module-item">
+
+            <!-- MODULE HEADER -->
+            <div class="d-flex justify-content-between align-items-center w-100 module-header"
+                 onclick="toggleModule('{{ module.id }}')"
+                 style="cursor:pointer;">
+
+                <div class="d-flex align-items-center gap-3">
+                    <div class="chapter-number">
+                        {{ loop.index }}
+                    </div>
+
+                    <div>
+                        <h6 class="chapter-title mb-1">
+                            {{ module.title }}
+                        </h6>
+
+                        <small>
+                            {{ module.completed_lessons }} / {{ module.total_lessons }} lessons •
+                            {{ module.difficulty|capitalize }}
+                        </small>
+                    </div>
+                </div>
+
+                
+            </div>
+
+            <!-- LESSON LIST -->
+            <ul class="lesson-list mt-3"
+                id="module-{{ module.id }}"
+                style="display:none; list-style:none; padding-left:60px;">
+
+                {% for lesson in module.lessons %}
+                <li class="d-flex justify-content-between align-items-center mb-3">
+
+                    <div>
+                        {% if lesson.completed %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                            <i class="bi bi-play-circle text-primary"></i>
+                        {% endif %}
+
+                        <span class="ms-2">
+                            {{ lesson.title }}
+                        </span>
+
+                        <small class="ms-2 text-muted">
+                            {{ lesson.duration }} mins
+                        </small>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="/lesson/{{ lesson.id }}" class="btn-open">
+                            Open
+                        </a>
+
+                        {% if not lesson.completed %}
+                        <button class="btn-open"
+                                onclick="markComplete(event, '{{ lesson.id }}')">
+                            Mark Complete
+                        </button>
+                        {% endif %}
+                    </div>
+
+                </li>
+                {% endfor %}
+
+            </ul>
+            {% if module.quiz %}
+            <li class="d-flex justify-content-between align-items-center mb-3">
+
+                <div>
+                    <i class="bi bi-patch-question-fill text-warning"></i>
+                    <span class="ms-2 fw-bold">
+                        {{ module.quiz.title }}
+                    </span>
+                    <small class="ms-2 text-muted">
+                        {{ module.quiz.points }} Points
+                    </small>
+                </div>
+
+                <div>
+                    <a href="/module-quiz/{{ module.id }}"
+                    class="btn btn-warning btn-sm">
+                    Take Quiz
+                    </a>
+                </div>
+
+            </li>
+            {% endif %}
+
+
+
+        </li>
+        {% endfor %}
+    {% else %}
+        <li class="syllabus-item">
+            <p>No modules available yet.</p>
+        </li>
+    {% endif %}
+
+</ul>
+
+                </div>
+            </div>
+            
+            <!-- Right Column - Course Info -->
+            <div class="col-lg-4">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5>Course Info</h5>
+                    </div>
+                    
+                    <div style="padding: 1.5rem;">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="info-content">
+                                <h6 class="mt-2">12 Hours on-demand video</h6>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-code-square"></i>
+                            </div>
+                            <div class="info-content">
+                                <h6 class="mt-2">Quiz Exercises</h6>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item" style="margin-bottom: 0;">
+                            <div class="info-icon">
+                                <i class="bi bi-trophy"></i>
+                            </div>
+                            <div class="info-content">
+                                <h6 class="mt-2">Certificate of Completion</h6>
+                            </div>
+                        </div>
+                        
+                        <div class="instructor-card">
+                            <h6>Your Faculty</h6>
+                            
+                            <div class="instructor-profile">
+                                 
+                                <div class="instructor-details">
+                                     <p><strong>Faculty:</strong> {{ course.faculty_name }}</p>
+                                </div>
+                            </div>
+                            
+                             
+                        </div>
+                        
+                        {% if resume_lesson %}
+                        <a href="/lesson/{{ resume_lesson.id }}" class="btn-resume">
+                            Resume Course →
+                        </a>
+                        {% else %}
+
+                        <button class="btn-resume">
+                            Resume Course →
+                        </button>
+                        {% endif %}
+                        <!-- Certificate Generation -->
+                        {% if course_completed and not enrollment.certificate_generated %}
+                        <a href="{{ url_for('generate_certificate', course_id=course.id) }}"
+                            class="btn btn-warning w-100 mt-3">
+                                🎓 Generate Certificate
+                        </a>
+                        {% elif enrollment.certificate_generated %}
+                        <button class="btn btn-success w-100 mt-3" disabled>
+                            ✅ Certificate Generated
+                        </button>
+                        {% endif %}
+
+                        <!-- Internship Unlock Section -->
+<!-- Internship Unlock Section -->
+                        <!-- {% if course_completed %}
+                            <a href="{{ url_for('course_internships', id=course.id) }}" 
+                                class="btn btn-success w-100 mt-3">
+                                    🔓 View Internships
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary w-100 mt-3" disabled>
+                                    🔒 Complete 100% to Unlock Internships
+                            </button>
+                        {% endif %} -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+function toggleModule(moduleId) {
+    const element = document.getElementById("module-" + moduleId);
+
+    if (element.style.display === "none") {
+        element.style.display = "block";
+    } else {
+        element.style.display = "none";
+    }
+}
+
+// Mark lesson complete
+function markComplete(event, lessonId) {
+    event.stopPropagation();
+
+    fetch("/mark-complete/" + lessonId, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

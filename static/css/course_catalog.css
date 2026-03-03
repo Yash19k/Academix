@@ -1,0 +1,339 @@
+* {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #F7F8FA;
+            color: #1E293B;
+        }
+        .main-navbar {
+    width: 100%;
+    background: white;
+    padding: 18px 5%;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.nav-menu a:hover {
+    color: #2563eb;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-login {
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-login:hover {
+    background: #f1f5f9;
+}
+.nav-menu a {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 6px 4px;
+    position: relative;
+    transition: 0.2s;
+}
+
+/* Hover */
+.nav-menu a:hover {
+    color: #2563eb;
+}
+
+/* Active Page */
+.active-link {
+    color: #2563eb !important;
+    font-weight: 600;
+}
+
+/* Modern Underline Indicator */
+.active-link::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #2563eb;
+    border-radius: 3px;
+}
+
+.btn-signup {
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-signup:hover {
+    background: #1d4ed8;
+}
+        .hero {
+            background: linear-gradient(135deg, #F0F4FF 0%, #E8EEFF 100%);
+            color: #1E293B;
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin-bottom: 36px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .hero h2 span {
+            color: #4F46E5;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            color: #475569;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero .btn-light {
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: #475569;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .hero .btn-light:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .filter-box {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .filter-box h6 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .filter-box label {
+            font-size: 0.813rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1.5px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.875rem;
+            color: #1E293B;
+            transition: all 0.2s ease;
+            background: #F8FAFC;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: white;
+        }
+
+        .form-control::placeholder {
+            color: #94A3B8;
+        }
+
+        .btn-primary {
+            background: #4F46E5;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: #4338CA;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .course-card {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            border-color: #CBD5E1;
+        }
+
+        .course-card .card-body {
+            padding: 24px;
+        }
+
+        .badge-level {
+            background: #EEF2FF;
+            color: #4F46E5;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.688rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            display: inline-block;
+        }
+
+        .course-card h5 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .course-card .text-muted {
+            color: #64748B !important;
+            font-size: 0.813rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .course-card .small {
+            color: #475569;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .course-card .fw-semibold {
+            color: #F59E0B;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .card-footer {
+            background: #F8FAFC !important;
+            border-top: 1px solid #E2E8F0 !important;
+            padding: 16px 24px !important;
+        }
+
+        .btn-outline-primary {
+            color: #4F46E5;
+            border: 1.5px solid #E2E8F0;
+            background: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: #4F46E5;
+            border-color: #4F46E5;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        .text-center.text-muted h5 {
+            color: #94A3B8;
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-top: 60px;
+        }
+
+        /* Additional refinements */
+        .container-fluid {
+            max-width: 1400px;
+        }
+
+        .row.g-4 {
+            row-gap: 28px !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991px) {
+            .hero {
+                padding: 40px 30px;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hero {
+                padding: 30px 24px;
+            }
+
+            .hero h2 {
+                font-size: 1.75rem;
+            }
+        }

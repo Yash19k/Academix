@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Videos - EduFlow</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/videos.css') }}">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-navbar">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="/" class="brand-wrapper">
+                    <div class="brand-icon">E</div>
+                    <span class="brand-name">EduFlow</span>
+                </a>
+                <a href="javascript:history.back()" class="back-to-course">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Back to Course</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="module-label">MODULE 3 › Advanced Concepts</div>
+            <h1 class="page-title">
+                Chapter Videos<span class="page-title-icon">🎬</span>
+            </h1>
+            <p class="page-description">
+                Master the fundamentals of data structures with these deep-dive video lessons.<br>
+                Watch them in order for the best learning experience.
+            </p>
+
+            <!-- Progress Bar -->
+            <div class="progress-section">
+                <span class="progress-label">Progress</span>
+                <div class="progress-wrapper">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: 33%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <span class="progress-text">2/6 Completed</span>
+            </div>
+        </div>
+
+        <!-- Videos Grid -->
+        <div class="videos-grid">
+            {% if videos %}
+                {% for video in videos %}
+                    <div class="video-card {% if video.locked %}video-locked{% endif %}">
+                        <!-- Video Thumbnail -->
+                        <div class="video-thumbnail">
+                            {% if video.thumbnail %}
+                                <img src="{{ url_for('static', filename=video.thumbnail) }}" alt="{{ video.title }}">
+                            {% else %}
+                                <!-- Placeholder gradient if no thumbnail -->
+                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                            {% endif %}
+
+                            <!-- Status Badges -->
+                            {% if video.status == 'watched' %}
+                                <div class="status-badge badge-watched">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>WATCHED</span>
+                                </div>
+                            {% elif video.status == 'up_next' %}
+                                <div class="status-badge badge-up-next">UP NEXT</div>
+                            {% endif %}
+
+                            <!-- Play/Lock Button -->
+                            {% if video.locked %}
+                                <div class="lock-overlay">
+                                    <i class="bi bi-lock-fill"></i>
+                                </div>
+                            {% else %}
+                                <div class="play-overlay">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                            {% endif %}
+
+                            <!-- Video Duration -->
+                            {% if video.duration %}
+                                <div class="video-duration">{{ video.duration }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Video Content -->
+                        <div class="video-content">
+                            {% if video.lesson_number %}
+                                <span class="lesson-tag">Lesson {{ video.lesson_number }}</span>
+                            {% endif %}
+
+                            <h3 class="video-title">{{ video.title }}</h3>
+
+                            {% if video.description %}
+                                <p class="video-description">{{ video.description }}</p>
+                            {% endif %}
+
+                            <!-- Video Footer Actions -->
+                            <div class="video-footer">
+                                {% if video.locked %}
+                                    <span class="locked-status">Locked</span>
+                                    {% if video.coming_soon %}
+                                        <span class="coming-soon-tag">Coming Soon</span>
+                                    {% endif %}
+                                {% elif video.status == 'watched' %}
+                                    <a href="#" class="video-action-btn">
+                                        <span>Review</span>
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </a>
+                                    {% if video.published_date %}
+                                        <span class="video-meta-info">Published {{ video.published_date }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="#" class="video-action-btn">
+                                        <span>Start Watching</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                    {% if video.published_date %}
+                                        <span class="video-meta-info">Published {{ video.published_date }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center" style="color: #64748b; padding: 3rem 0;">No videos available for this chapter.</p>
+                </div>
+            {% endif %}
+
+            <!-- Legacy video player support (if video.video_path exists) -->
+            {% if videos %}
+                {% for video in videos %}
+                    {% if video.video_path and not video.locked %}
+                        <!-- Hidden video element for backward compatibility -->
+                        <video id="video-{{ video.id }}" style="display: none;" controls>
+                            <source src="{{ url_for('static', filename=video.video_path) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Page Footer -->
+    <footer class="page-footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-copyright">
+                    © 2023 EduFlow Inc. All rights reserved.
+                </div>
+                <nav class="footer-nav">
+                    <a href="#" class="footer-link">Help Center</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Assistant AI - EDUSPARK</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+</head>
+
+<body>
+    <nav class="main-navbar">
+    <div class="nav-wrapper">
+
+        <!-- Logo -->
+        <div class="nav-logo">
+            Academix
+        </div>
+
+        <!-- Menu -->
+        <div class="nav-menu">
+            <a href="/dashboard"
+               class="{% if request.path == '/dashboard' %}active-link{% endif %}">
+               Dashboard
+            </a>
+
+            <a href="/course_catalog"
+               class="{% if request.path == '/course_catalog' %}active-link{% endif %}">
+               Courses
+            </a>
+
+            <a href="/chatbot"
+               class="{% if request.path == '/chatbot' %}active-link{% endif %}">
+               Chatbot
+            </a>
+
+            <a href="/leaderboard"
+               class="{% if request.path == '/leaderboard' %}active-link{% endif %}">
+               Leaderboard
+            </a>
+
+            <a href="/ats-checker"
+               class="{% if request.path == '/ats-checker' %}active-link{% endif %}">
+               ATS Checker
+            </a>
+
+            <a href="/ai-recommendations"
+               class="{% if request.path == '/ai-recommendations' %}active-link{% endif %}">
+               Find Internships
+            </a>
+        </div>
+
+    </div>
+</nav>
+<div class="main-container">
+
+    <!-- MAIN CHAT AREA -->
+    <main class="chat-main">
+
+        <!-- CHAT HEADER -->
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="assistant-avatar">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <div class="assistant-info">
+                    <h2>Course Assistant AI</h2>
+                    <div class="assistant-status">
+                        <span class="status-dot"></span>
+                        Online & Ready to Help
+                    </div>
+                </div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="header-btn" title="Delete conversation">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <button class="header-btn" title="Download chat">
+                    <i class="bi bi-download"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- CHAT BODY -->
+        <div class="chat-body">
+            <div class="message-group">
+
+                <div class="message ai">
+                    <div class="message-avatar ai">AI</div>
+                    <div class="message-content">
+                        <div class="message-author">Course Assistant</div>
+                        <div class="message-bubble">
+                            👋 Hello! I’m your AI Study Assistant.
+
+                            <br><br>
+                            I’m here to help you learn smarter and faster. You can ask me about:
+                            <ul>
+                                <li>📘 Explaining concepts in simple terms</li>
+                                <li>📝 Summarizing notes or chapters</li>
+                                <li>❓ Solving doubts step-by-step</li>
+                                <li>🧠 Creating quizzes for practice</li>
+                                <li>📊 Reviewing assignments or code</li>
+                            </ul>
+
+                            Just type your question below and let’s start learning! 🚀
+                        </div>
+                    </div>
+                </div>
+
+                {% for chat in chats %}
+                <div class="message user">
+                    <div class="message-avatar user"></div>
+                    <div class="message-content">
+                        <div class="message-author">You</div>
+                        <div class="message-bubble">
+                            {{ chat.question }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message ai">
+                    <div class="message-avatar ai">AI</div>
+                    <div class="message-content">
+                        <div class="message-author">Course Assistant</div>
+                        <div class="message-bubble">
+                            {{ chat.answer }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- CHAT FOOTER -->
+        <div class="chat-footer">
+            
+            <div class="input-container">
+                <div class="chat-input-wrapper">
+                    <textarea
+                        id="userInput"
+                        placeholder="Ask a follow-up question"
+                        rows="1"></textarea>
+                    <button id="sendButton" class="send-button">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                AI can make mistakes. Verify important information with course materials.
+            </div>
+
+            <!-- Hidden mode selector for backend compatibility -->
+            <select id="mode" class="form-select">
+                <option value="normal">Normal</option>
+                <option value="simple">Simple</option>
+                <option value="exam">Exam Focused</option>
+                <option value="short">Short</option>
+                <option value="detailed">Detailed</option>
+            </select>
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+const chatBody = document.querySelector(".chat-body");
+const userInput = document.getElementById("userInput");
+const sendButton = document.getElementById("sendButton");
+const modeSelect = document.getElementById("mode");
+
+// Get the header buttons
+const deleteButton = document.querySelector(".header-btn[title='Delete conversation']");
+const downloadButton = document.querySelector(".header-btn[title='Download chat']");
+
+// Delete chat functionality
+function clearChat() {
+    const messageGroup = document.querySelector('.message-group');
+    
+    // Keep the initial AI welcome message, remove all other messages
+    const initialMessage = messageGroup.querySelector('.message.ai:first-child');
+    const timestampElement = messageGroup.querySelector('.timestamp');
+    
+    // Clear all content in message group
+    messageGroup.innerHTML = '';
+    
+    // Re-add the initial AI message and timestamp if they exist
+    if (initialMessage && timestampElement) {
+        messageGroup.appendChild(timestampElement);
+        messageGroup.appendChild(initialMessage);
+    }
+}
+
+// Add event listener to delete button
+deleteButton.addEventListener('click', function() {
+    if (confirm('Are you sure you want to delete this conversation?')) {
+        clearChat();
+    }
+});
+
+// Download chat functionality
+async function downloadChat() {
+    try {
+        const response = await fetch('/api/download-chat', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin' // Include session cookies
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Create a Blob with the chat text from backend
+            const blob = new Blob([data.chat_text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            // Create a temporary anchor element to trigger download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat-history-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } else {
+            console.error('Failed to download chat from backend');
+            
+            // Fallback to frontend download if backend fails
+            downloadChatFrontend();
+        }
+    } catch (error) {
+        console.error('Error downloading chat:', error);
+        
+        // Fallback to frontend download if backend fails
+        downloadChatFrontend();
+    }
+}
+
+// Fallback function to download chat from frontend only
+function downloadChatFrontend() {
+    const messages = document.querySelectorAll('.message');
+    let chatText = 'Academix Chat History\n';
+    chatText += '===================\n\n';
+    
+    messages.forEach(message => {
+        const author = message.querySelector('.message-author').textContent;
+        const content = message.querySelector('.message-bubble').innerText;
+        
+        // Format timestamp if a    vailable
+        const timestamp = message.parentNode.querySelector('.timestamp');
+        const timeStr = timestamp ? timestamp.textContent : 'No timestamp';
+        
+        chatText += `[${timeStr}] ${author}:\n${content}\n\n`;
+    });
+    
+    // Create a Blob with the chat text
+    const blob = new Blob([chatText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary anchor element to trigger download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `chat-history-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// Add event listener to download button
+downloadButton.addEventListener('click', downloadChat);
+
+// Function to delete chat history from backend
+async function deleteChatBackend() {
+    try {
+        const response = await fetch('/api/delete-chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin' // Include session cookies
+        });
+        
+        if (response.ok) {
+            console.log('Chat history deleted from backend');
+        } else {
+            console.error('Failed to delete chat history from backend');
+        }
+    } catch (error) {
+        console.error('Error deleting chat history:', error);
+    }
+}
+
+// Update the clearChat function to also delete from backend
+function clearChat() {
+    const messageGroup = document.querySelector('.message-group');
+    
+    // Keep the initial AI welcome message, remove all other messages
+    const initialMessage = messageGroup.querySelector('.message.ai:first-child');
+    const timestampElement = messageGroup.querySelector('.timestamp');
+    
+    // Clear all content in message group
+    messageGroup.innerHTML = '';
+    
+    // Re-add the initial AI message and timestamp if they exist
+    if (initialMessage && timestampElement) {
+        messageGroup.appendChild(timestampElement);
+        messageGroup.appendChild(initialMessage);
+    }
+    
+    // Also delete from backend
+    deleteChatBackend();
+}
+
+// Auto-resize textarea
+userInput.addEventListener("input", function() {
+    this.style.height = "24px";
+    this.style.height = (this.scrollHeight) + "px";
+});
+
+sendButton.addEventListener("click", sendMessage);
+
+userInput.addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+function addMessage(text, type) {
+    const messageGroup = document.querySelector('.message-group');
+    
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${type}`;
+    
+    const avatar = document.createElement("div");
+    avatar.className = `message-avatar ${type}`;
+    if (type === 'ai') {
+        avatar.textContent = 'AI';
+    }
+    
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "message-content";
+    
+    const author = document.createElement("div");
+    author.className = "message-author";
+    author.textContent = type === 'user' ? 'You' : 'Course Assistant';
+    
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+    bubble.innerHTML = text.replace(/\n/g, "<br>");
+    
+    contentDiv.appendChild(author);
+    contentDiv.appendChild(bubble);
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(contentDiv);
+    
+    messageGroup.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function addTyping() {
+    const messageGroup = document.querySelector('.message-group');
+    
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message ai";
+    messageDiv.id = "typing-indicator";
+    
+    const avatar = document.createElement("div");
+    avatar.className = "message-avatar ai";
+    avatar.textContent = 'AI';
+    
+    const contentDiv = document.createElement("div");
+    contentDiv.className = "message-content";
+    
+    const author = document.createElement("div");
+    author.className = "message-author";
+    author.textContent = 'Course Assistant';
+    
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+    bubble.textContent = "Typing...";
+    
+    contentDiv.appendChild(author);
+    contentDiv.appendChild(bubble);
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(contentDiv);
+    
+    messageGroup.appendChild(messageDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return messageDiv;
+}
+
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    addMessage(message, "user");
+    userInput.value = "";
+    userInput.style.height = "24px";
+
+    const typing = addTyping();
+
+    try {
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                message: message,
+                mode: modeSelect.value
+            })
+        });
+
+        const data = await res.json();
+        typing.remove();
+
+        if (data.reply) {
+            addMessage(data.reply, "ai");
+        } else {
+            addMessage("AI error occurred.", "ai");
+        }
+    } catch {
+        typing.remove();
+        addMessage("Server error.", "ai");
+    }
+}
+</script>
+
+</body>
+</html>

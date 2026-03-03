@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e6e9ff, #f3f6ff);
+        }
+
+        .result-container {
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        }
+
+        .score-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(#5b6cff {{ percentage }}%, #e9ecef 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: auto;
+        }
+
+        .stat-box {
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-total { background: #f3f4f6; }
+        .stat-correct { background: #e6f9f0; }
+        .stat-wrong { background: #ffecec; }
+
+        .review-card {
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+
+        .correct-option {
+            background-color: #e6f9f0 !important;
+            border: 1px solid #28a745;
+        }
+
+        .wrong-option {
+            background-color: #ffecec !important;
+            border: 1px solid #dc3545;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #5b6cff, #7b61ff);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="result-container">
+
+    <div class="result-card">
+
+        <!-- Top Section -->
+        <div class="text-center mb-4">
+            {% if passed %}
+                <span class="badge bg-success mb-2">Passed</span>
+                <h2 class="fw-bold">Excellent Work!</h2>
+            {% else %}
+                <span class="badge bg-danger mb-2">Failed</span>
+                <h2 class="fw-bold">Keep Practicing!</h2>
+            {% endif %}
+        </div>
+
+        <!-- Score + Stats -->
+        <div class="row align-items-center mb-5">
+            <div class="col-md-4 text-center">
+                <div class="score-circle">
+                    {{ percentage|round(0) }}%
+                </div>
+                <p class="mt-3 text-muted">Final Score</p>
+            </div>
+
+            <div class="col-md-8">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <div class="stat-box stat-total">
+                            <h4>{{ total }}</h4>
+                            <small>Total</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="stat-box stat-correct">
+                            <h4>{{ score }}</h4>
+                            <small>Correct</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="stat-box stat-wrong">
+                            <h4>{{ total - score }}</h4>
+                            <small>Wrong</small>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Insight -->
+                <div class="alert alert-info mt-4">
+                    <strong>Performance Insight:</strong>
+                    You answered {{ score }} out of {{ total }} correctly.
+                    {% if passed %}
+                        Great understanding of the module!
+                    {% else %}
+                        Review the incorrect questions and try again.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Review -->
+        <h4 class="mb-4">Detailed Review</h4>
+
+        {% for r in results %}
+        <div class="review-card">
+
+            <h6 class="fw-semibold">
+                Question {{ loop.index }}: {{ r.question }}
+            </h6>
+
+            <ul class="list-group mt-3">
+
+                {% for opt in ['A','B','C','D'] %}
+                {% set option_value = r['option_' + opt.lower()] %}
+
+                <li class="list-group-item
+                    {% if opt == r.correct_option %}
+                        correct-option
+                    {% elif opt == r.selected_option and not r.is_correct %}
+                        wrong-option
+                    {% endif %}
+                ">
+                    {{ opt }}. {{ option_value }}
+
+                    {% if opt == r.correct_option %}
+                        <span class="badge bg-success float-end">Correct</span>
+                    {% elif opt == r.selected_option and not r.is_correct %}
+                        <span class="badge bg-danger float-end">Your Answer</span>
+                    {% endif %}
+                </li>
+
+                {% endfor %}
+            </ul>
+
+            {% if not r.is_correct %}
+            <div class="alert alert-light border mt-3">
+                <strong>Explanation:</strong> {{ r.explanation }}
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+        <!-- Buttons -->
+        <div class="text-center mt-4">
+            
+
+            <a href="/dashboard" class="btn btn-outline-dark">
+                Back to Dashboard
+            </a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

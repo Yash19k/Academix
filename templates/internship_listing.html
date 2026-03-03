@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container mt-5">
+    <h2>🔥 Recommended Internships</h2>
+
+    {% for internship in internships %}
+    <div class="card mt-3 p-3">
+
+        <h4>{{ internship.role_name }}</h4>
+        <p>Company: {{ internship.company }}</p>
+
+        <div>
+            <strong>Match:</strong>
+            <span style="color:
+                {% if internship.match_percent >= 80 %}
+                    green
+                {% elif internship.match_percent >= 50 %}
+                    orange
+                {% else %}
+                    red
+                {% endif %}
+            ">
+                {{ internship.match_percent }}%
+            </span>
+        </div>
+
+        <div>
+            Required Skills:
+            {% for skill in internship.required_skills %}
+                <span class="badge bg-dark">{{ skill }}</span>
+            {% endfor %}
+        </div>
+
+        <form method="POST" action="/apply_internship/{{ internship.id }}">
+            
+            {% if internship.match_percent >= 50 %}
+                <button class="btn btn-primary mt-2">Apply</button>
+            {% else %}
+                <button  disabled class="btn btn-secondary mt-2">Not Eligible</button>
+            {% endif %}
+        </form>
+
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
